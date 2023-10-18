@@ -1,6 +1,7 @@
 package com.myNotes.rest.api;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -8,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
-
+@Controller
 public class ModelOfProject {
     static Scanner scanner;
     static String doOther;
@@ -75,14 +76,10 @@ public class ModelOfProject {
                 case 5:
                    DeleteNote.deleteNote(userID);
                     break;
-
-                //ВИВАНТАЖИТИ НОТАТКИ
-                case 6:
-
-                    break;
-
             }
-// Бажаєте ще якусь дію здійснити?
+
+
+            // Бажаєте ще якусь дію здійснити?
             WrittingForClient.DoSmthMore();
             String doOther = scanner.nextLine();
             if ((doOther.equals("ні")) || (doOther.equals("нет"))) {

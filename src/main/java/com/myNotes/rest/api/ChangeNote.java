@@ -26,10 +26,9 @@ public class ChangeNote {
             //resultOfFindNote - ID Note
             //param - нове значення параметру який міняєм
             //whatChange - що треба змінити в нотатці
-            NoteList.changeNote(resultOfFindNote, param, whatChange);
+            NotesController.changeNote(resultOfFindNote, param, whatChange);
 
             System.out.println("Нотатка успішно змінена.");
-            break;
         }
     }
 

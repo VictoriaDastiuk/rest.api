@@ -17,47 +17,45 @@ import java.util.stream.IntStream;
 //import org.apache.poi.ss.usermodel.XSSFWorkbook;
     public class FilesNotes {
         File folder = new File("./Notes");
+
         public static void NewNotesFile(int userID) throws IOException {
-            FileOutputStream newFile = new FileOutputStream("notes_"+ userID +".txt");
+            FileOutputStream newFile = new FileOutputStream("notes_" + userID + ".txt");
         }
-        public static ArrayList<Note> FindFileAndGetInfo(int userID) throws IOException, ClassNotFoundException {
+
+        public static Path FindFile(int userID) throws IOException, ClassNotFoundException {
             Path directory = Paths.get("/home/DN180996DVA/IdeaProjects");
-            Path file = (Path) Files.find(directory,1,(path, basicFileAttributes) -> path.getFileName().toString().equals("notes_"+ userID + ".txt"));
+            Path file = (Path) Files.find(directory, 1, (path, basicFileAttributes) -> path.getFileName().toString().equals("notes_" + userID + ".txt"));
+            return file;
+        }
+
+        public static ArrayList<Note> getInfoFromFile(int userID) throws IOException, ClassNotFoundException {
+            Path file = FilesNotes.FindFile(userID);
             FileInputStream fileInputStream = new FileInputStream(file.toFile());
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             ArrayList<Note> notes = (ArrayList<Note>) objectInputStream.readObject();
             fileInputStream.close();
             return notes;
         }
+
         public static void AddNoteInFile(int userID, UUID id) throws IOException, ClassNotFoundException {
-            ArrayList<Note> note = FilesNotes.FindFileAndGetInfo(userID);
-            note.add();
-                }
+            ArrayList<Note> note = FilesNotes.getInfoFromFile(userID);
+            note.add(NotesController.findInNoteListbyID(id));
+            Path file = FilesNotes.FindFile(userID);
+            try (ObjectOutputStream sendInFile = new ObjectOutputStream((OutputStream) file)) {
+                sendInFile.writeObject(note);
+                sendInFile.close();
+            }
+            ((OutputStream) file).close();
+        }
 
-        public String addEmailToProfilesFile(String email)
-        {
+        public String addEmailToProfilesFile(String email) {
 
             return email;
         }
-        public String FindEmailInProfilesFile(String email)
-        {
+
+        public String FindEmailInProfilesFile(String email) {
 
             return email;
         }
-
-//    public static void creatWorkbook(int userID){
-//        Workbook workbook = new Workbook();
-//
-//        Sheet sheet = workbook.creatSheet(userID);
-//
-//
-//    }
-//    public static void addToWorkbook(int userID, String name, String title, String text, UUID id, String status){
-//        Workbook workbook = new Workbook();
-//
-//        Sheet sheet = workbook.creatSheet(userID);
-//
-//
-//    }
     }
 
