@@ -1,18 +1,10 @@
 package com.myNotes.rest.api;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class WrittingForClient {
     static Scanner scanner;
-    static int indexNote;
-    static String param;
-    static boolean answer;
-    static String whatChange;
-
 
     public static void whatChange() {
          System.out.println("Що бажаєте змінити в нотатці: назву, заголовок чи текст?");
@@ -45,9 +37,6 @@ public class WrittingForClient {
 
     }
 
-    public static void WriteSaveInFileNote() {
-        System.out.println("Бажаєте зберегти цю нотатку в файл?");
-    }
     public static void printYouHaveAccount() {
         System.out.println("Ви вже зареєстровані?");
     }
@@ -68,10 +57,7 @@ public class WrittingForClient {
                 "4 - переглянути нотатку" +
                 "5 - видалити нотатку?");
     }
-    public static void howFind() {
-        System.out.println("По чому будемо шукати нотатку щоб змінити: назва чи заголовок?");
-        String howFind = scanner.nextLine();
-    }
+
     public static void writeParam() {
         String howFind = scanner.nextLine();
         //пошук по заголовку
@@ -85,9 +71,6 @@ public class WrittingForClient {
         }
     }
 
-    public static void FindOneMoreTime() {
-        System.out.println("Бажаєте здійснити повторно пошук?");
-    }
     public static void dontFind() {
         System.out.println("Не найшли нотатку");
     }
@@ -115,8 +98,4 @@ public class WrittingForClient {
         }
     }
 
-    public static String howFindNote(){
-        WrittingForClient.howFind();
-        return scanner.nextLine();
-    }
 }
