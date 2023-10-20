@@ -58,7 +58,7 @@ public class WrittingForClient {
                 "5 - видалити нотатку?");
     }
     public static void howFind() {
-        System.out.println("По чому будемо шукати нотатку щоб змінити: назва чи заголовок?");
+        System.out.println("По чому будемо шукати нотатку: назва чи заголовок?");
         String howFind = scanner.nextLine();
     }
     public static void writeParam() {

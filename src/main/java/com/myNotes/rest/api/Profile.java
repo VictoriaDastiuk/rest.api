@@ -19,8 +19,10 @@ public class Profile {
     @Getter
     int userID;
 
+    ProfileList ProfileListInst = ProfileList.getInstance();
+
     public Profile(){
-        userID = ProfileList.getProfileList().size()+1;
+        userID = ProfileListInst.getProfileList().size()+1;
     }
 
    }

@@ -7,6 +7,8 @@ import java.util.UUID;
 
 public class ProfilesController {
     private static ProfilesController instance;
+    ProfileList ProfileListInst = ProfileList.getInstance();
+
 
     ProfilesController() {
     }
@@ -17,23 +19,23 @@ public class ProfilesController {
         return instance;
     }
     public boolean checkEmail(String email) {
-        return ProfileList.getProfileList().stream().anyMatch(profile -> profile.getEmail().equals(email));
+        return ProfileListInst.getProfileList().stream().anyMatch(profile -> profile.getEmail().equals(email));
     }
 
     public int createProfile() {
         Profile person = new Profile();
-        ProfilesController.addProfile(person);
+        getInstance().addProfile(person);
         return person.getUserID();
     }
 
-    public static void addProfile(Object Profile) {
-        List<Profile> updatedProfiles = ProfileList.getProfileList();
+    public void addProfile(Object Profile) {
+        List<Profile> updatedProfiles = ProfileListInst.getProfileList();
         updatedProfiles.add((Profile) Profile);
-        ProfileList.setProfiles(updatedProfiles);
+        ProfileListInst.setProfileList(updatedProfiles);
     }
 
     public void changeProfile(int UserId, String Name, String email) {
-        for (Profile pr : ProfileList.getProfileList()) {
+        for (Profile pr : ProfileListInst.getProfileList()) {
             if (UserId == pr.getUserID()) {
                 pr.setName(Name);
                 pr.setEmail(email);
@@ -45,7 +47,7 @@ public class ProfilesController {
     }
 
     public int findInProfileList(String email) {
-        for (Profile pr : ProfileList.getProfileList()) {
+        for (Profile pr : ProfileListInst.getProfileList()) {
             if (Objects.equals(email, pr.getEmail())) {
                 return pr.getUserID();
             }

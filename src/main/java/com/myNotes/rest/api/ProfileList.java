@@ -1,18 +1,23 @@
 package com.myNotes.rest.api;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileList {
-    public static List<Profile> Profiles = new ArrayList<>();
+    @Getter
+    @Setter
+    public List<Profile> ProfileList = new ArrayList<>();
 
-    public static List<Profile> getProfileList() {
-        return Profiles;
+    private static ProfileList instance;
+    ProfileList() {
     }
-
-    public static void setProfiles(List<Profile> profiles) {
-        Profiles = profiles;
+    public static ProfileList getInstance() {
+        if (instance == null) {
+            instance = new ProfileList();
+        }
+        return instance;
     }
-
-
 }

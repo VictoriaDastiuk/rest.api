@@ -12,15 +12,16 @@ import java.util.UUID;
 @Controller
 public class ModelOfProject {
     static Scanner scanner = new Scanner(System.in);
-    static String doOther;
-    static String answer;
+    String doOther;
+    String answer;
     static String valueParamFind;
     static String howFind;
-    static UUID resultOfFindNote;
-    static int userID;
+    UUID resultOfFindNote;
+    int userID;
 
-    static String whatChange;
-    static boolean  checkAuth;
+
+    String whatChange;
+    boolean  checkAuth;
 
     public static void MyNotes() throws IOException, ClassNotFoundException {
 
@@ -49,10 +50,7 @@ public class ModelOfProject {
         String title = scanner.nextLine();
         WrittingForClient.printTextNote();
         String text = scanner.nextLine();
-        WrittingForClient.howFind();
-        String howFind = scanner.nextLine();
-        WrittingForClient.writeParam();
-        String valueParamFind = scanner.nextLine();
+
 
 
             switch (answerWhatToDo) {
@@ -64,7 +62,11 @@ public class ModelOfProject {
 
                     //ЗМІНИТИ НОТАТКУ
                 case 2:
-                    notesControl.WantChangeNote(nameNote,title,text,email,howFind,valueParamFind);
+                    WrittingForClient.howFind();
+                    howFind = scanner.nextLine();
+                    WrittingForClient.writeParam();
+                    valueParamFind = scanner.nextLine();
+                    notesControl.WantChangeNote(email,nameNote,title,text,howFind,valueParamFind);
                     break;
 
                     //ПЕРЕГЛЯНУТИ ВСІ НОТАТКИ
@@ -74,11 +76,19 @@ public class ModelOfProject {
 
                 //ПЕРЕГЛЯНУТИ НОТАТКУ
                 case 4:
+                    WrittingForClient.howFind();
+                    howFind = scanner.nextLine();
+                    WrittingForClient.writeParam();
+                    valueParamFind = scanner.nextLine();
                     notesControl.WantShowNote(email,howFind,valueParamFind);
                     break;
 
                 //ВИДАЛИТИ НОТАТКУ
                 case 5:
+                    WrittingForClient.howFind();
+                    howFind = scanner.nextLine();
+                    WrittingForClient.writeParam();
+                    valueParamFind = scanner.nextLine();
                     notesControl.deleteNote(howFind,valueParamFind,email);
                     break;
             }

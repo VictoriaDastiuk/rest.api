@@ -12,6 +12,8 @@ public class NotesController {
 
     private static NotesController instance;
     ProfilesController profilesContr = ProfilesController.getInstance();
+    NoteList NoteListInst = NoteList.getInstance();
+
 
     private NotesController() {
     }
@@ -28,16 +30,16 @@ public class NotesController {
     }
 
     public void addNote(Object Note) {
-        List<Note> updatedNotes = NoteList.getNoteList();
+        List<Note> updatedNotes = NoteListInst.getNoteList();
         updatedNotes.add((Note) Note);
-        NoteList.setNoteList(updatedNotes);
+        NoteListInst.setNoteList(updatedNotes);
     }
 
     //    Знайти по заголовку нотатку
-    public UUID findInNoteListbyTitle(String title) {
-        for (Note note : NoteList.getNoteList())
+    public UUID findInNoteListbyTitle(String title, int userID) {
+        for (Note note : NoteListInst.getNoteList())
         {
-            if (note.getTitleNote().equals(title))
+            if (note.getTitleNote().equals(title) && note.getUserID()== userID)
             {
                 return note.getId();
             }
@@ -45,10 +47,10 @@ public class NotesController {
         return null;
     }
     //    знайти по айді
-    public static Note findInNoteListbyID(UUID ID) {
-        for (Note note : NoteList.getNoteList())
+    public Note findInNoteListbyID(UUID ID, int userID) {
+        for (Note note : NoteListInst.getNoteList())
         {
-            if (note.getId().equals(ID))
+            if (note.getId().equals(ID) && note.getUserID()== userID)
             {
                 return note;
             }
@@ -57,10 +59,10 @@ public class NotesController {
     }
 
     //    Знайти по назві нотатку
-    public UUID findInNoteListbyName(String name) {
-        for (Note note : NoteList.getNoteList())
+    public UUID findInNoteListbyName(String name, int userID) {
+        for (Note note : NoteListInst.getNoteList())
         {
-            if (note.getTitleNote().equals(name))
+            if (note.getTitleNote().equals(name) && note.getUserID()== userID)
             {
                 return note.getId();
             }
@@ -69,28 +71,28 @@ public class NotesController {
     }
 
     //    Розмір списку нотаток
-    public int getSizeList(){
-        return NoteList.noteList.size();
-    }
+//    public int getSizeList(){
+//        return NoteListInst.noteList.size();
+//    }
 
     //    МЕТОД ПОШУКУ НОТАТКИ
-    public UUID howFindNote(String param, String valueParamFind)
+    public UUID howFindNote(String param, String valueParamFind,int userID)
     {
         UUID id = null;
         if (param.equals("заголовок")) {
-            id = getInstance().findInNoteListbyTitle(valueParamFind);
+            id = getInstance().findInNoteListbyTitle(valueParamFind,userID);
         }
         if (param.equals("назва")){
-            id = getInstance().findInNoteListbyName(valueParamFind);
+            id = getInstance().findInNoteListbyName(valueParamFind, userID);
         }
         return id;
     }
 
     //   Зміна нотатки
-    public void changeNote (UUID ID, String name, String title, String text) {
+    public void changeNote (UUID ID, String name, String title, String text, int userID) {
         Note note;
         String formattedDate = getInstance().getDate();
-        note = NotesController.findInNoteListbyID(ID);
+        note = getInstance().findInNoteListbyID(ID, userID);
         Objects.requireNonNull(note).setModifyDate(formattedDate);
         Objects.requireNonNull(note).setStatusNote("Modified");
 
@@ -105,21 +107,21 @@ public class NotesController {
         }
     }
 
-    public void changeAllNote(UUID ID, String title, String name, String text){
+    public void changeAllNote(UUID ID, String title, String name, String text, int userID){
         Note note;
         String formattedDate = getInstance().getDate();
-        note = NotesController.findInNoteListbyID(ID);
-        Objects.requireNonNull(note).setModifyDate(formattedDate);
-        Objects.requireNonNull(note).setStatusNote("Modified");
-        Objects.requireNonNull(note).setNameNote(name);
-        Objects.requireNonNull(note).setTitleNote(title);
-        Objects.requireNonNull(note).setTextNote(text);
+        note = getInstance().findInNoteListbyID(ID, userID);
+        note.setModifyDate(formattedDate);
+        note.setStatusNote("Modified");
+        note.setNameNote(name);
+        note.setTitleNote(title);
+        note.setTextNote(text);
     }
 
-    public void delNote (UUID ID) {
+    public void delNote (UUID ID, int userID) {
         Note note;
-        note = NotesController.findInNoteListbyID(ID);
-        Objects.requireNonNull(note).setStatusNote("Deleted");
+        note = getInstance().findInNoteListbyID(ID,userID);
+        note.setStatusNote("Deleted");
 
     }
 
@@ -130,14 +132,15 @@ public class NotesController {
         return dateFormat.format(date);
     }
 
-    public UUID preFindNote (String howFind, String valueParamFind){
+    public UUID preFindNote (String howFind, String valueParamFind, int userID){
         //айдішнік нотатки виводить
-        return getInstance().howFindNote(howFind, valueParamFind);
+        return getInstance().howFindNote(howFind, valueParamFind, userID);
     }
 
-    public void WantChangeNote(String name, String title, String text, String email, String howFind, String valueParamFind) {
+    public void WantChangeNote(String email, String name, String title, String text, String howFind, String valueParamFind) {
+        int userID = profilesContr.findInProfileList(email);
 //        питаєм по чому робим пошук нотатки? і виводить айді нотатки
-        UUID idNote = getInstance().preFindNote(howFind,valueParamFind);
+        UUID idNote = getInstance().howFindNote(howFind,valueParamFind,userID);
 
         if (idNote == null) {
             //якшо не нашли нотатку
@@ -146,7 +149,7 @@ public class NotesController {
             //resultOfFindNote - ID Note
             //param - нове значення параметру який міняєм
             //whatChange - що треба змінити в нотатці
-            getInstance().changeNote(idNote,name,title,text);
+            getInstance().changeNote(idNote,name,title,text, userID);
 
         }
     }
@@ -155,14 +158,15 @@ public class NotesController {
     public void deleteNote(String howFind, String valueParamFind, String email) throws IOException, ClassNotFoundException {
         int userID = profilesContr.findInProfileList(email);
 //        питаєм по чому робим пошук нотатки? і виводить айді нотатки
-        UUID idNote = getInstance().preFindNote(howFind, valueParamFind);
+        UUID idNote = getInstance().howFindNote(howFind, valueParamFind, userID);
 
         if (idNote == null) {
             //якшо не нашли нотатку
             System.exit(400);
         } else {
-            getInstance().delNote(idNote);
-            FilesNotes.AddNoteInFile(userID,idNote);
+            getInstance().delNote(idNote, userID);
+            FilesNotes file = new FilesNotes();
+            file.AddNoteInFile(userID,idNote);
         }
     }
 
@@ -173,16 +177,18 @@ public class NotesController {
 
         Note note = new Note(userID);
         UUID ID = note.getId();
-        getInstance().changeAllNote(ID,title,name,text);
+        getInstance().createNote(userID);
+        getInstance().changeAllNote(ID,title,name,text, userID);
 
         // додавання в файл нотатки
-        FilesNotes.AddNoteInFile(userID, ID);
+        FilesNotes file = new FilesNotes();
+        file.AddNoteInFile(userID, ID);
     }
 
     public void ShowNoteList(String email){
         int userID = profilesContr.findInProfileList(email);
 
-        for (Note note : NoteList.getNoteList()) {
+        for (Note note : NoteListInst.getNoteList()) {
             if ((note.getStatusNote().equals("Created") || note.getStatusNote().equals("Modified")) && (userID == note.getUserID())){
                 System.out.println(note.getNameNote() + ": " + note.getTitleNote() + " Текст нотатки:" + note.getTextNote());
             }
@@ -192,18 +198,17 @@ public class NotesController {
         int userID = profilesContr.findInProfileList(email);
 
         // питаєм по чому робим пошук нотатки? і виводить айді нотатки
-        UUID idNote = getInstance().preFindNote(howFind,valueParamFind);
-
+        UUID idNote = getInstance().howFindNote(howFind,valueParamFind, userID);
         if (idNote == null) {
             //якшо не нашли нотатку
             System.exit(400);
         } else {
-            getInstance().showNote(idNote);
+            getInstance().showNote(idNote, userID);
         }
     }
 
-    public String showNote(UUID resultOfFindNote) {
-        Note note  = NotesController.findInNoteListbyID(resultOfFindNote);
+    public String showNote(UUID resultOfFindNote, int userID) {
+        Note note  = getInstance().findInNoteListbyID(resultOfFindNote, userID);
         String ans;
         //показуємо текст нотатки
         assert note != null;

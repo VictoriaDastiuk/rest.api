@@ -1,20 +1,23 @@
 package com.myNotes.rest.api;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
 
 public class NoteList {
 
+@Getter
+@Setter
+    public List<Note> noteList = new ArrayList<Note>();
 
-    public static List<Note> noteList = new ArrayList<Note>();
-
-
-    public static List<Note> getNoteList() {
-        return noteList;
+    private static NoteList instance;
+    NoteList() {
     }
-
-    public static void setNoteList(List<Note> noteList) {
-        NoteList.noteList = noteList;
+    public static NoteList getInstance() {
+        if (instance == null) {
+            instance = new NoteList();
+        }
+        return instance;
     }
 }
