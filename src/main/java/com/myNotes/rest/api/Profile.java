@@ -1,33 +1,23 @@
 package com.myNotes.rest.api;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
+@Setter
 public class Profile {
+    @Getter
+    @Setter
     String Name;
+    @Getter
+    @Setter
     String email;
-    static int userID;
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setName(String name) {
-        Name = name;
-    }
-
-    public int getUserID() {
-        return userID;
-    }
+    @Getter
+    int userID;
 
     public Profile(){
         userID = ProfileList.getProfileList().size()+1;

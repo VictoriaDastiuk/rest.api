@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class WrittingForClient {
-    static Scanner scanner;
+    static Scanner scanner = new Scanner(System.in);
 
     public static void whatChange() {
          System.out.println("Що бажаєте змінити в нотатці: назву, заголовок чи текст?");
@@ -62,17 +62,8 @@ public class WrittingForClient {
         String howFind = scanner.nextLine();
     }
     public static void writeParam() {
-        String howFind = scanner.nextLine();
-        //пошук по заголовку
-        if (howFind.equals("заголовок")) {
-            System.out.println("Введіть заголовок нотатки: ");
+            System.out.println("Введіть значення параметру пошуку: ");
         }
-
-        //пошук по назві
-        if (howFind.equals("назва")) {
-            System.out.println("Введіть назву нотатки: ");
-        }
-    }
 
     public static void dontFind() {
         System.out.println("Не найшли нотатку");
@@ -88,17 +79,6 @@ public class WrittingForClient {
         System.out.println("Профіль не створено, спробуйте пізніше");
     }
 
-    public static void showNote(UUID resultOfFindNote) {
-        Note note  = NotesController.findInNoteListbyID(resultOfFindNote);
-        //показуємо текст нотатки
-        assert note != null;
-        if (note.getStatusNote().equals("Created") || note.getStatusNote().equals("Modified"))
-        {
-            System.out.println(note.getNameNote() + ": " + note.getTitleNote() + " Текст нотатки:" + note.getTextNote());
-        }
-        else {
-            System.out.println("У вас немає такої нотатки або ж вона вже видалена");
-        }
-    }
+
 
 }

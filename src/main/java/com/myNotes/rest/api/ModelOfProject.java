@@ -11,82 +11,77 @@ import java.util.Scanner;
 import java.util.UUID;
 @Controller
 public class ModelOfProject {
-    static Scanner scanner;
+    static Scanner scanner = new Scanner(System.in);
     static String doOther;
     static String answer;
-    static String paramToFind;
+    static String valueParamFind;
     static String howFind;
     static UUID resultOfFindNote;
     static int userID;
 
     static String whatChange;
-    static boolean  checkEmail;
+    static boolean  checkAuth;
 
     public static void MyNotes() throws IOException, ClassNotFoundException {
+
+        WrittingForClient.printName();
+        String name = scanner.nextLine();
+        WrittingForClient.printMAil();
+        String email = scanner.nextLine();
+
         //починається авторизація
         Auth ans = new Auth();
-        answer = ans.startAuth();
+        boolean checkAuth = ans.startAuth(email, name);
 
-        //має аккаунт чи ні
-        if (answer.equals("нет") || answer.equals("ні")) {
-            checkEmail = ans.AuthForNewCustom();
-        }
-        else {
-           checkEmail = ans.AuthForOldCustom();
+        if (checkAuth){
+            System.exit(503);
         }
 
+        NotesController notesControl = NotesController.getInstance();
 
-        //ця штука треба якшо вже такий емейл є при новій реєстрації чи якшо ненашли користувача по емейлу
-        if (!checkEmail) {
-            Auth.rePrintEmail(answer);
-        }
+        // Що хоче зробити створити нову, змінити стару, переглянути список нотаток, видалити?
+        WrittingForClient.whatToDO();
+        int answerWhatToDo = Integer.parseInt(scanner.nextLine());
 
+        WrittingForClient.printNameNote();
+        String nameNote = scanner.nextLine();
+        WrittingForClient.printTitleNote();
+        String title = scanner.nextLine();
+        WrittingForClient.printTextNote();
+        String text = scanner.nextLine();
+        WrittingForClient.howFind();
+        String howFind = scanner.nextLine();
+        WrittingForClient.writeParam();
+        String valueParamFind = scanner.nextLine();
 
-        //ідем далі якшо все по емейлу ок
-        else {
-        do {
-            WrittingForClient.whatToDO();
-            // Що хоче зробити створити нову, змінити стару, переглянути список нотаток, видалити?
-            int answerWhatToDo = Integer.parseInt(scanner.nextLine());
-            userID = Profile.userID;
 
             switch (answerWhatToDo) {
 
                 // СТВОРИТИ НОТАТКУ
                 case 1:
-                    MakeNote.makeNote(userID);
+                    notesControl.makeNote(nameNote,title,text,email);
                     break;
 
                     //ЗМІНИТИ НОТАТКУ
                 case 2:
-                    ChangeNote.WantChangeNote(userID);
+                    notesControl.WantChangeNote(nameNote,title,text,email,howFind,valueParamFind);
                     break;
 
                     //ПЕРЕГЛЯНУТИ ВСІ НОТАТКИ
                 case 3:
-                    ShowNoteList.ShowNoteList(userID);
+                    notesControl.ShowNoteList(email);
                     break;
 
                 //ПЕРЕГЛЯНУТИ НОТАТКУ
                 case 4:
-                    ShowNote.WantShowNote(userID);
+                    notesControl.WantShowNote(email,howFind,valueParamFind);
                     break;
 
                 //ВИДАЛИТИ НОТАТКУ
                 case 5:
-                   DeleteNote.deleteNote(userID);
+                    notesControl.deleteNote(howFind,valueParamFind,email);
                     break;
             }
-
-
-            // Бажаєте ще якусь дію здійснити?
-            WrittingForClient.DoSmthMore();
-            String doOther = scanner.nextLine();
-            if ((doOther.equals("ні")) || (doOther.equals("нет"))) {
-                System.out.println("Thanks for using app!");
-                break;
-            }
-        } while (doOther.equals("так") || doOther.equals("да"));
-    }
-}}
+}
+}
 
