@@ -2,7 +2,9 @@ package com.myNotes.rest.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import netscape.javascript.JSObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-
+@RestController
 public class ModelOfProject {
     static Scanner scanner = new Scanner(System.in);
     String doOther;
@@ -32,11 +34,11 @@ public class ModelOfProject {
             Auth ans = new Auth();
             boolean checkAuth = ans.startAuth(email, name);
             String result;
-            if (checkAuth) {
+            if (!checkAuth) {
                 result = "Авторизація успішна";
             }
             else {
-                 result = "Авторизація успішна";
+                 result = "Авторизація не успішна";
             }
             return result;
         }
@@ -65,6 +67,10 @@ public class ModelOfProject {
         return notesControl.deleteNote(howFind,valueParamFind,email);
     }
 
+    @RequestMapping(value = "/error", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> handleAuthenticationError() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized.");
+    }
 }
     
 
