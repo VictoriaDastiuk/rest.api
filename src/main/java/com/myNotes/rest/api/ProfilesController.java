@@ -24,7 +24,7 @@ public class ProfilesController {
 
     public int createProfile() {
         Profile person = new Profile();
-        getInstance().addProfile(person);
+        addProfile(person);
         return person.getUserID();
     }
 

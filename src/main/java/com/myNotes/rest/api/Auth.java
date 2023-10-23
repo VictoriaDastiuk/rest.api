@@ -7,7 +7,6 @@ import java.util.Scanner;
 public class Auth {
     static boolean checkEmail;
     ProfilesController profilesContr = ProfilesController.getInstance();
-
     public boolean startAuth(String mail, String user) throws IOException {
         checkEmail = profilesContr.checkEmail(mail);
         if (checkEmail) {

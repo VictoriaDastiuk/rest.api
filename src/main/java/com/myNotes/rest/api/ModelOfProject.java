@@ -1,97 +1,151 @@
 package com.myNotes.rest.api;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import netscape.javascript.JSObject;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
+
 @Controller
+
 public class ModelOfProject {
     static Scanner scanner = new Scanner(System.in);
     String doOther;
     String answer;
-    static String valueParamFind;
-    static String howFind;
+    String valueParamFind;
+    String howFind;
     UUID resultOfFindNote;
+    String result;
     int userID;
-
+    NotesController notesControl = NotesController.getInstance();
+    ProfilesController profilesContr = ProfilesController.getInstance();
+    NoteList noteListControl = NoteList.getInstance();
 
     String whatChange;
     boolean  checkAuth;
-
-    public static void MyNotes() throws IOException, ClassNotFoundException {
-
-        WrittingForClient.printName();
-        String name = scanner.nextLine();
-        WrittingForClient.printMAil();
-        String email = scanner.nextLine();
-
-        //починається авторизація
-        Auth ans = new Auth();
-        boolean checkAuth = ans.startAuth(email, name);
-
-        if (checkAuth){
-            System.exit(503);
+    @RequestMapping(value = "/api/auth", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String MyNotes(@RequestParam("name") String name, @RequestParam("email") String email) throws IOException, ClassNotFoundException {
+            Auth ans = new Auth();
+            boolean checkAuth = ans.startAuth(email, name);
+            String result;
+            if (checkAuth) {
+                result = "Авторизація успішна";
+            }
+            else {
+                 result = "Авторизація успішна";
+            }
+            return result;
         }
 
-        NotesController notesControl = NotesController.getInstance();
+    @RequestMapping(value = "/api/newNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String newNote(@RequestParam(required = true) String email,@RequestParam(required = true) String nameNote, @RequestParam(required = true) String title, @RequestParam(required = true) String text) throws IOException, ClassNotFoundException {
+        result = notesControl.makeNote(nameNote, title, text, email);
+        return result;
+    }
+
+    @RequestMapping(value = "/api/changeNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String changeNote(@RequestParam(required = true) String email, @RequestParam(required = true) String nameNote, @RequestParam(required = true) String title, @RequestParam(required = true) String text, @RequestParam(required = true) String howFind, @RequestParam(required = true) String valueParamFind) throws IOException, ClassNotFoundException {
+        notesControl.WantChangeNote(email,nameNote,title,text,howFind,valueParamFind);
+        return result;
+    }
+    @RequestMapping(value = "/api/showAllNotes", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Note> showAllNotes(@RequestParam(required = true) String email) throws IOException, ClassNotFoundException {
+        return notesControl.ShowNoteList(email);
+    }
+    @RequestMapping(value = "/api/showNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Note showNote(@RequestParam(required = true) String email, @RequestParam(required = true) String howFind, @RequestParam(required = true) String valueParamFind) throws IOException, ClassNotFoundException {
+        return notesControl.WantShowNote(email,howFind,valueParamFind);
+    }
+    @RequestMapping(value = "/api/delNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String delNote(@RequestParam(required = true)  String email, @RequestParam(required = true)  String howFind, @RequestParam(required = true)  String valueParamFind) throws IOException, ClassNotFoundException {
+        return notesControl.deleteNote(howFind,valueParamFind,email);
+    }
+
+}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //починається авторизація
+
+
+
+
 
         // Що хоче зробити створити нову, змінити стару, переглянути список нотаток, видалити?
-        WrittingForClient.whatToDO();
-        int answerWhatToDo = Integer.parseInt(scanner.nextLine());
+//        WrittingForClient.whatToDO();
+//        int answerWhatToDo = Integer.parseInt(scanner.nextLine());
+//        int userID = profilesContr.findInProfileList(email);
 
-        WrittingForClient.printNameNote();
-        String nameNote = scanner.nextLine();
-        WrittingForClient.printTitleNote();
-        String title = scanner.nextLine();
-        WrittingForClient.printTextNote();
-        String text = scanner.nextLine();
-
-
-
-            switch (answerWhatToDo) {
-
-                // СТВОРИТИ НОТАТКУ
-                case 1:
-                    notesControl.makeNote(nameNote,title,text,email);
-                    break;
+//
+//            switch (answerWhatToDo) {
+//
+//                // СТВОРИТИ НОТАТКУ
+//                case 1:
+//                    WrittingForClient.printNameNote();
+//                    String nameNote = scanner.nextLine();
+//                    WrittingForClient.printTitleNote();
+//                    String title = scanner.nextLine();
+//                    WrittingForClient.printTextNote();
+//                    String text = scanner.nextLine();
+//                    break;
 
                     //ЗМІНИТИ НОТАТКУ
-                case 2:
-                    WrittingForClient.howFind();
-                    howFind = scanner.nextLine();
-                    WrittingForClient.writeParam();
-                    valueParamFind = scanner.nextLine();
-                    notesControl.WantChangeNote(email,nameNote,title,text,howFind,valueParamFind);
-                    break;
+//                case 2:
+//                    WrittingForClient.howFind();
+//                    howFind = scanner.nextLine();
+//                    WrittingForClient.writeParam();
+//                    valueParamFind = scanner.nextLine();
+//                    WrittingForClient.printNameNote();
+//                    nameNote = scanner.nextLine();
+//                    WrittingForClient.printTitleNote();
+//                    title = scanner.nextLine();
+//                    WrittingForClient.printTextNote();
+//                    text = scanner.nextLine();
+//                    break;
+//
+//                    //ПЕРЕГЛЯНУТИ ВСІ НОТАТКИ
+//                case 3:
+//                    break;
+//
+//                //ПЕРЕГЛЯНУТИ НОТАТКУ
+//                case 4:
+//                    WrittingForClient.howFind();
+//                    howFind = scanner.nextLine();
+//                    WrittingForClient.writeParam();
+//                    valueParamFind = scanner.nextLine();
+//                    break;
 
-                    //ПЕРЕГЛЯНУТИ ВСІ НОТАТКИ
-                case 3:
-                    notesControl.ShowNoteList(email);
-                    break;
-
-                //ПЕРЕГЛЯНУТИ НОТАТКУ
-                case 4:
-                    WrittingForClient.howFind();
-                    howFind = scanner.nextLine();
-                    WrittingForClient.writeParam();
-                    valueParamFind = scanner.nextLine();
-                    notesControl.WantShowNote(email,howFind,valueParamFind);
-                    break;
-
-                //ВИДАЛИТИ НОТАТКУ
-                case 5:
-                    WrittingForClient.howFind();
-                    howFind = scanner.nextLine();
-                    WrittingForClient.writeParam();
-                    valueParamFind = scanner.nextLine();
-                    notesControl.deleteNote(howFind,valueParamFind,email);
-                    break;
-            }
-}
-}
+//                //ВИДАЛИТИ НОТАТКУ
+//                case 5:
+//                    WrittingForClient.howFind();
+//                    howFind = scanner.nextLine();
+//                    WrittingForClient.writeParam();
+//                    valueParamFind = scanner.nextLine();
+//                    break;
+//            }
+//}
 

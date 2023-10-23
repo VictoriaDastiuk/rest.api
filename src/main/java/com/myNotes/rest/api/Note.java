@@ -5,11 +5,12 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.security.PrivateKey;
 import java.util.*;
 @Getter
 @Setter
-public class Note {
+public class Note implements Serializable {
 
    private String nameNote;
 
