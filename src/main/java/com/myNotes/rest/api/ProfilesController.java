@@ -48,16 +48,16 @@ public class ProfilesController {
         }
     }
 
-    public Profile findProfinProfileList(String email, String name) {
-        ProfileListInst.setProfileList(profileList);
-        List<Note> infoFromFile = FilesNotes.returnNotesFromFile();
-        for (Profile pr : ProfileListInst.getProfileList()) {
-            if (Objects.equals(email, pr.getEmail())) {
-                return pr;
-            }
-        }
-        return null;
-    }
+//    public Profile findProfinProfileList(String email, String name) {
+//        ProfileListInst.setProfileList(profileList);
+//        List<Note> infoFromFile = FilesNotes.returnNotesFromFile();
+//        for (Profile pr : ProfileListInst.getProfileList()) {
+//            if (Objects.equals(email, pr.getEmail())) {
+//                return pr;
+//            }
+//        }
+//        return null;
+//    }
 
     public String findInProfileList(String email, String name) {
 
