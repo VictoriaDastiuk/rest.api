@@ -29,7 +29,7 @@ public class ModelOfProject {
 
     String whatChange;
     boolean  checkAuth;
-    @RequestMapping(value = "/api/auth", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/api/auth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String MyNotes(@RequestParam("name") String name, @RequestParam("email") String email) throws IOException, ClassNotFoundException {
             Auth ans = new Auth();
             boolean checkAuth = ans.startAuth(email, name);
@@ -43,13 +43,13 @@ public class ModelOfProject {
             return result;
         }
 
-    @RequestMapping(value = "/api/newNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/api/newNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String newNote(@RequestParam(required = true) String email,@RequestParam(required = true) String nameNote, @RequestParam(required = true) String title, @RequestParam(required = true) String text) throws IOException, ClassNotFoundException {
         result = notesControl.makeNote(nameNote, title, text, email);
         return result;
     }
 
-    @RequestMapping(value = "/api/changeNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/api/changeNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String changeNote(@RequestParam(required = true) String email, @RequestParam(required = true) String nameNote, @RequestParam(required = true) String title, @RequestParam(required = true) String text, @RequestParam(required = true) String howFind, @RequestParam(required = true) String valueParamFind) throws IOException, ClassNotFoundException {
         notesControl.WantChangeNote(email,nameNote,title,text,howFind,valueParamFind);
         return result;
@@ -62,7 +62,7 @@ public class ModelOfProject {
     public Note showNote(@RequestParam(required = true) String email, @RequestParam(required = true) String howFind, @RequestParam(required = true) String valueParamFind) throws IOException, ClassNotFoundException {
         return notesControl.WantShowNote(email,howFind,valueParamFind);
     }
-    @RequestMapping(value = "/api/delNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/api/delNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String delNote(@RequestParam(required = true)  String email, @RequestParam(required = true)  String howFind, @RequestParam(required = true)  String valueParamFind) throws IOException, ClassNotFoundException {
         return notesControl.deleteNote(howFind,valueParamFind,email);
     }
