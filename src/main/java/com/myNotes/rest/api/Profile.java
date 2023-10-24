@@ -10,13 +10,10 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Profile {
-    @Getter
-    @Setter
+
     String Name;
-    @Getter
-    @Setter
+
     String email;
-    @Getter
     int userID;
 
     ProfileList ProfileListInst = ProfileList.getInstance();

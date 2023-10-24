@@ -25,6 +25,7 @@ public class NotesController {
 
     public Note createNote(int userID){
         Note note = new Note(userID);
+        note.setAddDate(NotesController.getInstance().getDate());
         return note;
     }
 
@@ -88,22 +89,23 @@ public class NotesController {
     }
 
     //   Зміна нотатки
-    public void changeNote (UUID ID, String name, String title, String text, int userID) {
+    public Note changeNote (UUID ID, String name, String title, String text, int userID) {
         Note note;
         String formattedDate = getDate();
         note = findInNoteListbyID(ID, userID);
-        Objects.requireNonNull(note).setModifyDate(formattedDate);
-        Objects.requireNonNull(note).setStatusNote("Modified");
+        note.setModifyDate(formattedDate);
+        note.setStatusNote("Modified");
 
-        if (Objects.nonNull(title)) {
-            Objects.requireNonNull(note).setTitleNote(title);
+        if (title!=null) {
+            note.setTitleNote(title);
         }
-        if (Objects.nonNull(name)){
-            Objects.requireNonNull(note).setNameNote(name);
+        if (name!=null){
+            note.setNameNote(name);
         }
-        if (Objects.nonNull(text)) {
-            Objects.requireNonNull(note).setTextNote(text);
+        if (text!=null) {
+            note.setTextNote(text);
         }
+        return note;
     }
 
     public void changeAllNote(UUID ID, String title, String name, String text, int userID){
@@ -138,7 +140,7 @@ public class NotesController {
 
     public String WantChangeNote(String email, String name, String title, String text, String howFind, String valueParamFind) throws IOException, ClassNotFoundException {
        try {
-           int userID = profilesContr.findInProfileList(email);
+           int userID = profilesContr.getUserIDFromList(email);
            List<Note> infoFromFile = FilesNotes.returnNotesFromFile(userID);
            if (infoFromFile!= null) {
                NoteListInst.setNoteList(infoFromFile);
@@ -154,7 +156,10 @@ public class NotesController {
                //resultOfFindNote - ID Note
                //param - нове значення параметру який міняєм
                //whatChange - що треба змінити в нотатці
-               changeNote(idNote,name,title,text, userID);
+               Note note = changeNote(idNote,name,title,text, userID);
+               // додавання в файл нотатки
+               FilesNotes file = new FilesNotes();
+               file.AddNoteInFile(userID, note.getId(),NoteListInst.getNoteList());
                result = "ok";
 
            }
@@ -166,7 +171,7 @@ public class NotesController {
 
 
     public String deleteNote(String howFind, String valueParamFind, String email) throws IOException, ClassNotFoundException {
-        int userID = profilesContr.findInProfileList(email);
+        int userID = profilesContr.getUserIDFromList(email);
         try {
             List<Note> infoFromFile = FilesNotes.returnNotesFromFile(userID);
 
@@ -192,7 +197,7 @@ public class NotesController {
     }
 
     public String makeNote(String name, String title, String text, String email) throws IOException, ClassNotFoundException {
-        int userID = profilesContr.findInProfileList(email);
+        int userID = profilesContr.getUserIDFromList(email);
         try {
             //  визначення сьогоднішньої дати
             String formattedDate = getDate();
@@ -215,7 +220,7 @@ public class NotesController {
 
     public List<Note> ShowNoteList(String email) throws IOException, ClassNotFoundException {
         try {
-        int userID = profilesContr.findInProfileList(email);
+        int userID = profilesContr.getUserIDFromList(email);
         List<Note> infoFromFile = FilesNotes.returnNotesFromFile(userID);
         if (infoFromFile!= null) {
             return infoFromFile;
@@ -232,7 +237,7 @@ public class NotesController {
         return null;
     }
     public Note WantShowNote (String email, String howFind, String valueParamFind) {
-        int userID = profilesContr.findInProfileList(email);
+        int userID = profilesContr.getUserIDFromList(email);
 
         // питаєм по чому робим пошук нотатки? і виводить айді нотатки
         UUID idNote = howFindNote(howFind, valueParamFind, userID);

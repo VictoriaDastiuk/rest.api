@@ -26,21 +26,15 @@ public class ModelOfProject {
     NotesController notesControl = NotesController.getInstance();
     ProfilesController profilesContr = ProfilesController.getInstance();
     NoteList noteListControl = NoteList.getInstance();
+    Auth authControl = Auth.getInstance();
+
 
     String whatChange;
     boolean  checkAuth;
     @RequestMapping(value = "/api/auth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String MyNotes(@RequestParam("name") String name, @RequestParam("email") String email) throws IOException, ClassNotFoundException {
-            Auth ans = new Auth();
-            boolean checkAuth = ans.startAuth(email, name);
-            String result;
-            if (!checkAuth) {
-                result = "Авторизація успішна";
-            }
-            else {
-                 result = "Авторизація не успішна";
-            }
-            return result;
+    public String Auth(@RequestParam("name") String name, @RequestParam("email") String email) throws IOException, ClassNotFoundException {
+        result = authControl.startAuth(email,name);
+        return result;
         }
 
     @RequestMapping(value = "/api/newNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
