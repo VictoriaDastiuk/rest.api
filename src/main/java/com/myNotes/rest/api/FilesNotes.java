@@ -1,8 +1,8 @@
 package com.myNotes.rest.api;
 
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
+import com.myNotes.rest.api.model.Note;
+import com.myNotes.rest.api.model.Profile;
 
-import java.io.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.File;

@@ -1,8 +1,8 @@
 package com.myNotes.rest.api;
 
+import com.myNotes.rest.api.controller.ModelOfProject;
+
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {

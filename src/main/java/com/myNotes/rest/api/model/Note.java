@@ -1,4 +1,4 @@
-package com.myNotes.rest.api;
+package com.myNotes.rest.api.model;
 
 import lombok.Getter;
 import lombok.Setter;

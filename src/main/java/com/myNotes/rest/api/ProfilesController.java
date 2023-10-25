@@ -1,9 +1,10 @@
 package com.myNotes.rest.api;
 
+import com.myNotes.rest.api.model.Profile;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class ProfilesController {
     String result;

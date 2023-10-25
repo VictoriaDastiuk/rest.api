@@ -1,7 +1,6 @@
 package com.myNotes.rest.api;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.myNotes.rest.api.model.Profile;
 
 import java.io.Serializable;
 import java.util.ArrayList;

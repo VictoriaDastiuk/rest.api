@@ -1,5 +1,8 @@
-package com.myNotes.rest.api;
+package com.myNotes.rest.api.controller;
 
+import com.myNotes.rest.api.*;
+import com.myNotes.rest.api.model.Note;
+import com.myNotes.rest.api.model.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

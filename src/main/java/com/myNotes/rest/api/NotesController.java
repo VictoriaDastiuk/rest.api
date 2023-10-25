@@ -1,7 +1,7 @@
 package com.myNotes.rest.api;
 
-import javax.imageio.IIOException;
-import java.io.File;
+import com.myNotes.rest.api.model.Note;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
