@@ -12,6 +12,7 @@ public class Auth {
 
     private Auth() {
     }
+
     public static Auth getInstance() {
         if (instance == null) {
             instance = new Auth();
@@ -21,25 +22,45 @@ public class Auth {
 
     ProfilesController profilesContr = ProfilesController.getInstance();
     ProfileList ProfileListInst = ProfileList.getInstance();
+//ProfileList profileList = new ProfileList();
 
     public String startAuth(String mail, String user) throws IOException, ClassNotFoundException {
 
-        List<Profile> profiles = FilesNotes.returnProfilesFromFile(mail,user);
-        ProfileListInst.setProfileList(profiles);
-        String nullProfiles = profilesContr.findInProfileList(mail, user);
-        if (nullProfiles.equals("new")){
+        List<Profile> profiles = FilesNotes.getInfoProfilesFile();
+        if (profiles != null) {
+            ProfileListInst.setProfileList(profiles);
+            String nullProfiles = profilesContr.findInProfileList(mail, user);
+            if (nullProfiles.equals("new")) {
+                // Cтворення користувача
+                Profile profile = profilesContr.createProfile();
+                profilesContr.addProfile(profile);
+                profilesContr.changeProfile(profile.getUserID(), user, mail);
+                List<Profile> newProfiles = ProfileListInst.getProfileList();
+
+                FilesNotes.AddProfileInFile(newProfiles);
+                FilesNotes.NewNotesFile(profile.getUserID());
+
+                result = "Авторизація успішна";
+            } else {
+                if (nullProfiles.equals("ok")) {
+                    result = "Авторизація успішна";
+                }
+                if (nullProfiles.equals("error")) {
+                    result = "Авторизація не успішна";
+                }
+            }
+        } else {
             // Cтворення користувача
-            int userId = profilesContr.createProfile();
-//            Profile newProfile = profilesContr.changeProfile(userId, user, mail);
-            FilesNotes.AddProfileInFile();
-            FilesNotes.NewNotesFile(userId);
+            Profile profile = profilesContr.createProfile();
+            profilesContr.addProfile(profile);
+            profilesContr.changeProfile(profile.getUserID(), user, mail);
+            List<Profile> newProfiles = ProfileListInst.getProfileList();
+
+            FilesNotes.AddProfileInFile(newProfiles);
+            FilesNotes.NewNotesFile(profile.getUserID());
 
             result = "Авторизація успішна";
         }
-
         return result;
     }
-
-
-
 }

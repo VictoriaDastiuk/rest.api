@@ -1,7 +1,5 @@
 package com.myNotes.rest.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import netscape.javascript.JSObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +57,10 @@ public class ModelOfProject {
     @RequestMapping(value = "/api/delNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String delNote(@RequestParam(required = true)  String email, @RequestParam(required = true)  String howFind, @RequestParam(required = true)  String valueParamFind) throws IOException, ClassNotFoundException {
         return notesControl.deleteNote(howFind,valueParamFind,email);
+    }
+    @RequestMapping(value = "/api/showAllProfiles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Profile> showAllProfiles() throws IOException, ClassNotFoundException {
+        return profilesContr.ShowProfileList();
     }
 
     @RequestMapping(value = "/error", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

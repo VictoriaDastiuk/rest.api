@@ -1,20 +1,18 @@
 package com.myNotes.rest.api;
 
-import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.UUID;
-    //import org.apache.poi.ss.usermodel.*;
+
+//import org.apache.poi.ss.usermodel.*;
 //import org.apache.poi.ss.usermodel.XSSFWorkbook;
     public class FilesNotes {
         File folder = new File("./Notes");
@@ -22,55 +20,52 @@ import java.util.UUID;
         ProfilesController profileContr = ProfilesController.getInstance();
 
         NoteList NoteListContr = NoteList.getInstance();
-        static ProfileList ProfileListContr = ProfileList.getInstance();
 
-        public static void NewProfileFile() throws IOException {
+
+
+    public static void NewProfileFile() throws IOException {
             FileOutputStream newFile = new FileOutputStream("Profiles.txt");
         }
         public static File FindFileProfiles() throws IOException {
-            File directory = new File("/home/DN180996DVA/IdeaProjects/rest.api");
+                File dir = new File("/home/DN180996DVA/IdeaProjects/rest.api");
+                String name = "Profiles.txt";
+                File[] files = dir.listFiles();
 
-            File file = new File(directory, "Profiles.txt");
-
-            if (file.exists()) {
-                return file;
-            } else {
+                for (File file : files) {
+                    if (file.getName().equals(name)) {
+                        return file;
+                    }
+                }
                 return null;
-            }
         }
-        public static List<Profile> returnProfilesFromFile(String email, String name) throws IOException, ClassNotFoundException {
+
+    public static List<Profile> getInfoProfilesFile() throws IOException, ClassNotFoundException {
             File file = FilesNotes.FindFileProfiles();
+            if (file!=null){
+                FileInputStream fileInputStream = new FileInputStream(file);
+                try {
+                    ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                    List<Profile> profiles = (List<Profile>) objectInputStream.readObject();
+                    fileInputStream.close();
+                    return profiles;
+                } catch (IOException e){
+                    return null;
+                }
+    }                    return null;
 
-            if (file==null){
-                FilesNotes.NewProfileFile();
-                return null;
-            }
-            return FilesNotes.getInfoFromProfileFile(file);
-        }
-        public static List<Profile> getInfoFromProfileFile(File file) throws IOException, ClassNotFoundException {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            try {
-                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-                List<Profile> profiles = (List<Profile>) objectInputStream.readObject();
-                fileInputStream.close();
-                return profiles;
-            } catch (IOException e){
-                return null;
-            }
-        }
-        public static void AddProfileInFile() throws IOException, ClassNotFoundException {
-            // Створити об'єкт ObjectOutputStream
-            FileOutputStream fileOutputStream = new FileOutputStream("Profiles.txt");
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(ProfileListContr.getProfileList());
+    }
+    public static void AddProfileInFile(List<Profile> infoFromFile) throws IOException, ClassNotFoundException {
 
-            // Закрити об'єкти
-            objectOutputStream.close();
-            fileOutputStream.close();
+        // Створити об'єкт ObjectOutputStream
+        FileOutputStream fileOutputStream = new FileOutputStream("Profiles.txt");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(infoFromFile);
 
-        }
+        // Закрити об'єкти
+        objectOutputStream.close();
+        fileOutputStream.close();
 
-
+    }
 
         public static void NewNotesFile(int userID) throws IOException {
             FileOutputStream newFile = new FileOutputStream("notes_" + userID + ".txt");
@@ -88,7 +83,7 @@ import java.util.UUID;
             }
         }
 
-        public static List<Note> getInfoFromNotesFile(int userID, File file) throws IOException, ClassNotFoundException {
+        public static List<Note> getInfoFromNotesFile(File file) throws IOException, ClassNotFoundException {
             FileInputStream fileInputStream = new FileInputStream(file);
             try {
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -108,7 +103,7 @@ import java.util.UUID;
                 file = FilesNotes.FindFileNotes(userID);
                 return null;
             }
-            return FilesNotes.getInfoFromNotesFile(userID,file);
+            return FilesNotes.getInfoFromNotesFile(file);
         }
         public void AddNoteInFile(int userID, UUID id, List<Note> infoFromFile) throws IOException, ClassNotFoundException {
                 Note note = NotesContr.findInNoteListbyID(id,userID);

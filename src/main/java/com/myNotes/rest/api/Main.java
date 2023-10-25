@@ -14,8 +14,11 @@ public class Main {
     static String whatChange;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-//ModelOfProject.MyNotes();
+        ModelOfProject auth = new ModelOfProject();
+        String name = "vika";
+        String email = "vika";
+        String result = auth.Auth(name,email);
+//        List<Profile> profiles = auth.showAllProfiles();
 
-
-}
+    }
 }
