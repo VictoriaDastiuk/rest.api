@@ -33,6 +33,4 @@ public class Note implements Serializable {
         this.id = UUID.randomUUID();
         this.userID = userID;
     }
-
-
 }

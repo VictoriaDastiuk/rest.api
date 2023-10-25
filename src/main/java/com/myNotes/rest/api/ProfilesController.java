@@ -1,11 +1,9 @@
 package com.myNotes.rest.api;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ProfilesController {
     String result;
@@ -26,14 +24,13 @@ public class ProfilesController {
         return ProfileListInst.getProfileList().stream().anyMatch(profile -> profile.getEmail().equals(email));
     }
 
-    public int createProfile() {
+    public Profile createProfile() {
         Profile person = new Profile();
-        addProfile(person);
-        return person.getUserID();
+        return person;
     }
 
     public void addProfile(Profile Profile) {
-        List<Profile> updatedProfiles = ProfileListInst.getProfileList();
+        List<Profile> updatedProfiles = new ProfileList().getProfileList();
         updatedProfiles.add(Profile);
         ProfileListInst.setProfileList(updatedProfiles);
     }
@@ -43,7 +40,6 @@ public class ProfilesController {
             if (UserId == pr.getUserID()) {
                 pr.setName(Name);
                 pr.setEmail(email);
-                break;
             }
         }
     }
@@ -83,5 +79,19 @@ public class ProfilesController {
         }
         return 0;
     }
-}
+
+
+    public List<Profile> ShowProfileList() throws IOException, ClassNotFoundException {
+
+            try {
+                List<Profile> profiles = FilesNotes.getInfoProfilesFile();
+                if (profiles!= null) {
+                    ProfileListInst.setProfileList(profiles);
+                }
+                    return ProfileListInst.getProfileList();
+            }
+            catch (IOException e) {
+                return null;
+            }
+        }}
 

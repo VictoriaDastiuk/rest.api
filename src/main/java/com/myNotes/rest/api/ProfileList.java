@@ -3,10 +3,11 @@ package com.myNotes.rest.api;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileList {
+public class ProfileList implements Serializable {
     @Getter
     @Setter
     public List<Profile> ProfileList = new ArrayList<>();

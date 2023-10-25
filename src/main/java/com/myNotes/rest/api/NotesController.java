@@ -159,7 +159,7 @@ public class NotesController {
                Note note = changeNote(idNote,name,title,text, userID);
                // додавання в файл нотатки
                FilesNotes file = new FilesNotes();
-               file.AddNoteInFile(userID, note.getId(),NoteListInst.getNoteList());
+               file.AddNoteInFile(userID, idNote,NoteListInst.getNoteList());
                result = "ok";
 
            }
@@ -208,7 +208,7 @@ public class NotesController {
 
             // додавання в файл нотатки
             FilesNotes file = new FilesNotes();
-            file.AddNoteInFile(userID, note.getId(),NoteListInst.getNoteList());
+            file.AddNoteInFile(userID,note.getId(),NoteListInst.getNoteList());
             return "ok";
         }
         catch (IOException e)
