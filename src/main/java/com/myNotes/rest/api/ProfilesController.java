@@ -30,18 +30,19 @@ public class ProfilesController {
     }
 
     public void addProfile(Profile Profile) {
-        List<Profile> updatedProfiles = new ProfileList().getProfileList();
-        updatedProfiles.add(Profile);
-        ProfileListInst.setProfileList(updatedProfiles);
+        Profile.setUserID(ProfileListInst.getProfileList().size());
+        ProfileListInst.addProfile(Profile);
     }
 
-    public void changeProfile(int UserId, String Name, String email) {
+    public Profile changeProfile(int UserId, String Name, String email) {
         for (Profile pr : ProfileListInst.getProfileList()) {
             if (UserId == pr.getUserID()) {
                 pr.setName(Name);
                 pr.setEmail(email);
+                return pr;
             }
         }
+        return null;
     }
 
 //    public Profile findProfinProfileList(String email, String name) {

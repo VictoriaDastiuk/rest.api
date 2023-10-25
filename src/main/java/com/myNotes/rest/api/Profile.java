@@ -20,10 +20,9 @@ public class Profile implements Serializable {
     String email;
     int userID;
 
-    ProfileList ProfileListInst = ProfileList.getInstance();
+
 
     public Profile(){
-        userID = ProfileListInst.getProfileList().size()+1;
     }
 
    }

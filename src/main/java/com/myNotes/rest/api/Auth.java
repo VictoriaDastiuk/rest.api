@@ -1,6 +1,7 @@
 package com.myNotes.rest.api;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -53,10 +54,9 @@ public class Auth {
             // Cтворення користувача
             Profile profile = profilesContr.createProfile();
             profilesContr.addProfile(profile);
-            profilesContr.changeProfile(profile.getUserID(), user, mail);
-            List<Profile> newProfiles = ProfileListInst.getProfileList();
+            profile = profilesContr.changeProfile(profile.getUserID(), user, mail);
 
-            FilesNotes.AddProfileInFile(newProfiles);
+            FilesNotes.AddProfileInFile(ProfileListInst.getProfileList());
             FilesNotes.NewNotesFile(profile.getUserID());
 
             result = "Авторизація успішна";
