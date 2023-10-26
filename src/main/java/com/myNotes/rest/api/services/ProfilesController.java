@@ -1,25 +1,30 @@
-package com.myNotes.rest.api;
+package com.myNotes.rest.api.services;
 
 import com.myNotes.rest.api.model.Profile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Service
 public class ProfilesController {
     String result;
-    private static ProfilesController instance;
-    ProfileList ProfileListInst = ProfileList.getInstance();
+//    private static ProfilesController instance;
+    @Autowired
+    ProfileList ProfileListInst;
 
-    ProfilesController() {
-    }
+//    ProfilesController() {
+//    }
 
-    public static ProfilesController getInstance() {
-        if (instance == null) {
-            instance = new ProfilesController();
-        }
-        return instance;
-    }
+//    public static ProfilesController getInstance() {
+//        if (instance == null) {
+//            instance = new ProfilesController();
+//        }
+//        return instance;
+//    }
 
     public boolean checkEmail(String email) {
         return ProfileListInst.getProfileList().stream().anyMatch(profile -> profile.getEmail().equals(email));
@@ -73,16 +78,26 @@ public class ProfilesController {
         return result;
     }
 
-    public int getUserIDFromList(String email) {
+    public String getUserIDFromList(String email) {
         for (Profile pr : ProfileListInst.getProfileList()) {
             if (Objects.equals(email, pr.getEmail())) {
-                return pr.getUserID();
+                return String.valueOf(pr.getUserID());
             }
         }
-        return 0;
+        return "error";
     }
-
-
+public String checkEmailInProfilesList (String email) throws IOException, ClassNotFoundException {
+            ;
+    if (ShowProfileList().isEmpty()) {
+        return "Can`t find profile";
+    } else {
+        String userIDSring = getUserIDFromList(email);
+        if (userIDSring.equals("error")) {
+            return "Can`t find profile";
+        }
+    }
+    return "ok";
+    }
     public List<Profile> ShowProfileList() throws IOException, ClassNotFoundException {
 
             try {

@@ -1,28 +1,32 @@
-package com.myNotes.rest.api;
+package com.myNotes.rest.api.services;
 
 import com.myNotes.rest.api.model.Profile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
+@Service
 
 public class Auth {
     static boolean checkEmail;
     String result;
-    private static Auth instance;
+//    private static Auth instance;
 
-    private Auth() {
-    }
-
-    public static Auth getInstance() {
-        if (instance == null) {
-            instance = new Auth();
-        }
-        return instance;
-    }
-
-    ProfilesController profilesContr = ProfilesController.getInstance();
-    ProfileList ProfileListInst = ProfileList.getInstance();
+    //    private Auth() {
+//    }
+//
+//    public static Auth getInstance() {
+//        if (instance == null) {
+//            instance = new Auth();
+//        }
+//        return instance;
+//    }
+    @Autowired
+    ProfilesController profilesContr;
+    @Autowired
+    ProfileList ProfileListInst;
 //ProfileList profileList = new ProfileList();
 
     public String startAuth(String mail, String user) throws IOException, ClassNotFoundException {

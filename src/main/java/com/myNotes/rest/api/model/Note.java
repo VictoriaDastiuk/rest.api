@@ -2,6 +2,7 @@ package com.myNotes.rest.api.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -10,6 +11,7 @@ import java.security.PrivateKey;
 import java.util.*;
 @Getter
 @Setter
+@Component
 public class Note implements Serializable {
 
    private String nameNote;
@@ -23,14 +25,11 @@ public class Note implements Serializable {
     private String modifyDate;
 
     private String statusNote;
-    @Getter
     private UUID id;
 
     int userID;
 
-    public Note(int userID) {
-        this.statusNote = "Created";
-        this.id = UUID.randomUUID();
-        this.userID = userID;
+    public Note() {
+
     }
 }

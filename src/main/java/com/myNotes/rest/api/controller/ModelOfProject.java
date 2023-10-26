@@ -1,8 +1,14 @@
 package com.myNotes.rest.api.controller;
 
-import com.myNotes.rest.api.*;
+import com.myNotes.rest.api.model.AuthDto;
 import com.myNotes.rest.api.model.Note;
+import com.myNotes.rest.api.model.NoteDto;
 import com.myNotes.rest.api.model.Profile;
+import com.myNotes.rest.api.services.Auth;
+import com.myNotes.rest.api.services.NoteList;
+import com.myNotes.rest.api.services.NotesController;
+import com.myNotes.rest.api.services.ProfilesController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,51 +22,69 @@ import java.util.*;
 @Controller
 @RestController
 public class ModelOfProject {
-    static Scanner scanner = new Scanner(System.in);
-    String doOther;
-    String answer;
-    String valueParamFind;
-    String howFind;
-    UUID resultOfFindNote;
     String result;
-    int userID;
-    NotesController notesControl = NotesController.getInstance();
-    ProfilesController profilesContr = ProfilesController.getInstance();
-    NoteList noteListControl = NoteList.getInstance();
-    Auth authControl = Auth.getInstance();
+    @Autowired
+    NotesController notesControl;
+    @Autowired
+    ProfilesController profilesContr;
+    @Autowired
+    Auth authControl;
 
-
-    String whatChange;
-    boolean  checkAuth;
     @RequestMapping(value = "/api/auth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String Auth(@RequestParam("name") String name, @RequestParam("email") String email) throws IOException, ClassNotFoundException {
-        result = authControl.startAuth(email,name);
-        return result;
+    public String Auth(@RequestBody AuthDto authDto) throws IOException, ClassNotFoundException {
+        if (authDto.getEmail().isEmpty() || authDto.getName().isEmpty()) {
+            return "Message: error. Missing parametr";
+        } else {
+            result = authControl.startAuth(authDto.getEmail(), authDto.getName());
+            return result;
         }
+    }
 
     @RequestMapping(value = "/api/newNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String newNote(@RequestParam(required = true) String email,@RequestParam(required = true) String nameNote, @RequestParam(required = true) String title, @RequestParam(required = true) String text) throws IOException, ClassNotFoundException {
-        result = notesControl.makeNote(nameNote, title, text, email);
-        return result;
+    public String newNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+        if (noteDto.getEmail().isEmpty() || noteDto.getNameNote().isEmpty()) {
+            return "Message: error. Missing parametr for email or name fo Note";
+        } else {
+            result = notesControl.makeNote(noteDto.getNameNote(), noteDto.getTitle(), noteDto.getText(), noteDto.getEmail());
+            return result;
+        }
     }
 
     @RequestMapping(value = "/api/changeNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String changeNote(@RequestParam(required = true) String email, @RequestParam(required = true) String nameNote, @RequestParam(required = true) String title, @RequestParam(required = true) String text, @RequestParam(required = true) String howFind, @RequestParam(required = true) String valueParamFind) throws IOException, ClassNotFoundException {
-        notesControl.WantChangeNote(email,nameNote,title,text,howFind,valueParamFind);
-        return result;
+    public String changeNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+        if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
+            return "Message: error. Missing parametr for email or name fo Note";
+        } else {
+            notesControl.WantChangeNote(noteDto.getEmail(), noteDto.getNameNote(),noteDto.getTitle(),noteDto.getText(),noteDto.getHowFind(),noteDto.getValueParamFind());
+            return result;
+        }
     }
+
     @RequestMapping(value = "/api/showAllNotes", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Note> showAllNotes(@RequestParam(required = true) String email) throws IOException, ClassNotFoundException {
         return notesControl.ShowNoteList(email);
     }
+
     @RequestMapping(value = "/api/showNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Note showNote(@RequestParam(required = true) String email, @RequestParam(required = true) String howFind, @RequestParam(required = true) String valueParamFind) throws IOException, ClassNotFoundException {
-        return notesControl.WantShowNote(email,howFind,valueParamFind);
+    public String showNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+        if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
+            return "Message: error. Missing parametr for email or name fo Note";
+        } else {
+            notesControl.WantShowNote(noteDto.getEmail(),noteDto.getHowFind(),noteDto.getValueParamFind());
+            return result;
+        }
     }
+
     @RequestMapping(value = "/api/delNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String delNote(@RequestParam(required = true)  String email, @RequestParam(required = true)  String howFind, @RequestParam(required = true)  String valueParamFind) throws IOException, ClassNotFoundException {
-        return notesControl.deleteNote(howFind,valueParamFind,email);
+    public String delNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+        if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
+            return "Message: error. Missing parametr for email or name fo Note";
+        } else {
+            notesControl.deleteNote(noteDto.getHowFind(),noteDto.getValueParamFind(),noteDto.getEmail());
+            return result;
+        }
     }
+
     @RequestMapping(value = "/api/showAllProfiles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Profile> showAllProfiles() throws IOException, ClassNotFoundException {
         return profilesContr.ShowProfileList();
@@ -71,36 +95,12 @@ public class ModelOfProject {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized.");
     }
 }
-    
 
 
+//починається авторизація
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //починається авторизація
-
-
-
-
-
-        // Що хоче зробити створити нову, змінити стару, переглянути список нотаток, видалити?
+// Що хоче зробити створити нову, змінити стару, переглянути список нотаток, видалити?
 //        WrittingForClient.whatToDO();
 //        int answerWhatToDo = Integer.parseInt(scanner.nextLine());
 //        int userID = profilesContr.findInProfileList(email);
@@ -118,7 +118,7 @@ public class ModelOfProject {
 //                    String text = scanner.nextLine();
 //                    break;
 
-                    //ЗМІНИТИ НОТАТКУ
+//ЗМІНИТИ НОТАТКУ
 //                case 2:
 //                    WrittingForClient.howFind();
 //                    howFind = scanner.nextLine();
