@@ -12,7 +12,6 @@ import java.util.*;
 
 @Service
 public class NotesController {
-    String result;
 
     private static NotesController instance;
     @Autowired
@@ -20,15 +19,6 @@ public class NotesController {
     @Autowired
     NoteList NoteListInst;
 
-
-//    private NotesController() {
-//    }
-//    public static NotesController getInstance() {
-//        if (instance == null) {
-//            instance = new NotesController();
-//        }
-//        return instance;
-//    }
 
     public Note createNote() {
         Note note = new Note();
@@ -72,10 +62,6 @@ public class NotesController {
         return null;
     }
 
-    //    Розмір списку нотаток
-//    public int getSizeList(){
-//        return NoteListInst.noteList.size();
-//    }
 
     //    МЕТОД ПОШУКУ НОТАТКИ
     public UUID howFindNote(String param, String valueParamFind, int userID) {

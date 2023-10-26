@@ -10,19 +10,7 @@ import java.util.List;
 @Service
 
 public class Auth {
-    static boolean checkEmail;
     String result;
-//    private static Auth instance;
-
-    //    private Auth() {
-//    }
-//
-//    public static Auth getInstance() {
-//        if (instance == null) {
-//            instance = new Auth();
-//        }
-//        return instance;
-//    }
     @Autowired
     ProfilesController profilesContr;
     @Autowired

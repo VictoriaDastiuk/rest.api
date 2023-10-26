@@ -14,13 +14,4 @@ public class NoteList {
 
     public List<Note> noteList = new ArrayList<Note>();
 
-//    private static NoteList instance;
-//    NoteList() {
-//    }
-//    public static NoteList getInstance() {
-//        if (instance == null) {
-//            instance = new NoteList();
-//        }
-//        return instance;
-//    }
 }

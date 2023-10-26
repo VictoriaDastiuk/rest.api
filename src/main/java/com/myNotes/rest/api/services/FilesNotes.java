@@ -21,10 +21,6 @@ public class FilesNotes {
     File folder = new File("./Notes");
     @Autowired
     NotesController NotesContr;
-    @Autowired
-    ProfilesController profileContr;
-    @Autowired
-    NoteList NoteListContr;
 
 
     public static void NewProfileFile() throws IOException {

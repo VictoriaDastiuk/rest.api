@@ -5,7 +5,6 @@ import com.myNotes.rest.api.model.Note;
 import com.myNotes.rest.api.model.NoteDto;
 import com.myNotes.rest.api.model.Profile;
 import com.myNotes.rest.api.services.Auth;
-import com.myNotes.rest.api.services.NoteList;
 import com.myNotes.rest.api.services.NotesController;
 import com.myNotes.rest.api.services.ProfilesController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,14 +54,14 @@ public class ModelOfProject {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
-            notesControl.WantChangeNote(noteDto.getEmail(), noteDto.getNameNote(),noteDto.getTitle(),noteDto.getText(),noteDto.getHowFind(),noteDto.getValueParamFind());
+            notesControl.WantChangeNote(noteDto.getEmail(), noteDto.getNameNote(), noteDto.getTitle(), noteDto.getText(), noteDto.getHowFind(), noteDto.getValueParamFind());
             return result;
         }
     }
 
     @RequestMapping(value = "/api/showAllNotes", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Note> showAllNotes(@RequestParam(required = true) String email) throws IOException, ClassNotFoundException {
-        return notesControl.ShowNoteList(email);
+    public List<Note> showAllNotes(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+        return notesControl.ShowNoteList(noteDto.getEmail());
     }
 
     @RequestMapping(value = "/api/showNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,7 +69,7 @@ public class ModelOfProject {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
-            notesControl.WantShowNote(noteDto.getEmail(),noteDto.getHowFind(),noteDto.getValueParamFind());
+            notesControl.WantShowNote(noteDto.getEmail(), noteDto.getHowFind(), noteDto.getValueParamFind());
             return result;
         }
     }
@@ -80,7 +79,7 @@ public class ModelOfProject {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
-            notesControl.deleteNote(noteDto.getHowFind(),noteDto.getValueParamFind(),noteDto.getEmail());
+            notesControl.deleteNote(noteDto.getHowFind(), noteDto.getValueParamFind(), noteDto.getEmail());
             return result;
         }
     }
@@ -96,61 +95,4 @@ public class ModelOfProject {
     }
 }
 
-
-//починається авторизація
-
-
-// Що хоче зробити створити нову, змінити стару, переглянути список нотаток, видалити?
-//        WrittingForClient.whatToDO();
-//        int answerWhatToDo = Integer.parseInt(scanner.nextLine());
-//        int userID = profilesContr.findInProfileList(email);
-
-//
-//            switch (answerWhatToDo) {
-//
-//                // СТВОРИТИ НОТАТКУ
-//                case 1:
-//                    WrittingForClient.printNameNote();
-//                    String nameNote = scanner.nextLine();
-//                    WrittingForClient.printTitleNote();
-//                    String title = scanner.nextLine();
-//                    WrittingForClient.printTextNote();
-//                    String text = scanner.nextLine();
-//                    break;
-
-//ЗМІНИТИ НОТАТКУ
-//                case 2:
-//                    WrittingForClient.howFind();
-//                    howFind = scanner.nextLine();
-//                    WrittingForClient.writeParam();
-//                    valueParamFind = scanner.nextLine();
-//                    WrittingForClient.printNameNote();
-//                    nameNote = scanner.nextLine();
-//                    WrittingForClient.printTitleNote();
-//                    title = scanner.nextLine();
-//                    WrittingForClient.printTextNote();
-//                    text = scanner.nextLine();
-//                    break;
-//
-//                    //ПЕРЕГЛЯНУТИ ВСІ НОТАТКИ
-//                case 3:
-//                    break;
-//
-//                //ПЕРЕГЛЯНУТИ НОТАТКУ
-//                case 4:
-//                    WrittingForClient.howFind();
-//                    howFind = scanner.nextLine();
-//                    WrittingForClient.writeParam();
-//                    valueParamFind = scanner.nextLine();
-//                    break;
-
-//                //ВИДАЛИТИ НОТАТКУ
-//                case 5:
-//                    WrittingForClient.howFind();
-//                    howFind = scanner.nextLine();
-//                    WrittingForClient.writeParam();
-//                    valueParamFind = scanner.nextLine();
-//                    break;
-//            }
-//}
 

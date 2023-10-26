@@ -12,23 +12,13 @@ import java.util.Objects;
 @Service
 public class ProfilesController {
     String result;
-//    private static ProfilesController instance;
     @Autowired
     ProfileList ProfileListInst;
 
-//    ProfilesController() {
-//    }
 
-//    public static ProfilesController getInstance() {
-//        if (instance == null) {
-//            instance = new ProfilesController();
-//        }
-//        return instance;
+//    public boolean checkEmail(String email) {
+//        return ProfileListInst.getProfileList().stream().anyMatch(profile -> profile.getEmail().equals(email));
 //    }
-
-    public boolean checkEmail(String email) {
-        return ProfileListInst.getProfileList().stream().anyMatch(profile -> profile.getEmail().equals(email));
-    }
 
     public Profile createProfile() {
         Profile person = new Profile();
@@ -50,17 +40,6 @@ public class ProfilesController {
         }
         return null;
     }
-
-//    public Profile findProfinProfileList(String email, String name) {
-//        ProfileListInst.setProfileList(profileList);
-//        List<Note> infoFromFile = FilesNotes.returnNotesFromFile();
-//        for (Profile pr : ProfileListInst.getProfileList()) {
-//            if (Objects.equals(email, pr.getEmail())) {
-//                return pr;
-//            }
-//        }
-//        return null;
-//    }
 
     public String findInProfileList(String email, String name) {
 
