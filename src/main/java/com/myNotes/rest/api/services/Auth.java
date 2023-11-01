@@ -19,9 +19,10 @@ public class Auth {
 
     public String startAuth(String mail, String user) throws IOException, ClassNotFoundException {
 
-        List<Profile> profiles = FilesNotes.getInfoProfilesFile();
-        if (profiles != null) {
-            ProfileListInst.setProfileList(profiles);
+//        List<Profile> profiles = FilesNotes.getInfoProfilesFile();
+//        if (profiles != null) {
+//            ProfileListInst.setProfileList(profiles);
+        if (!ProfileListInst.getProfileList().isEmpty()){
             String nullProfiles = profilesContr.findInProfileList(mail, user);
             if (nullProfiles.equals("new")) {
                 // Cтворення користувача
@@ -31,7 +32,6 @@ public class Auth {
                 List<Profile> newProfiles = ProfileListInst.getProfileList();
 
                 FilesNotes.AddProfileInFile(newProfiles);
-                FilesNotes.NewNotesFile(profile.getUserID());
 
                 result = "Авторизація успішна";
             } else {
@@ -49,7 +49,6 @@ public class Auth {
             profile = profilesContr.changeProfile(profile.getUserID(), user, mail);
 
             FilesNotes.AddProfileInFile(ProfileListInst.getProfileList());
-            FilesNotes.NewNotesFile(profile.getUserID());
 
             result = "Авторизація успішна";
         }

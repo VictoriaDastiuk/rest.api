@@ -79,15 +79,14 @@ public String checkEmailInProfilesList (String email) throws IOException, ClassN
     }
     public List<Profile> ShowProfileList() throws IOException, ClassNotFoundException {
 
-            try {
-                List<Profile> profiles = FilesNotes.getInfoProfilesFile();
-                if (profiles!= null) {
-                    ProfileListInst.setProfileList(profiles);
-                }
+                if (!ProfileListInst.getProfileList().isEmpty()){
+//                List<Profile> profiles = FilesNotes.getInfoProfilesFile();
+//                if (profiles!= null) {
+//                    ProfileListInst.setProfileList(profiles);
+//                }
                     return ProfileListInst.getProfileList();
             }
-            catch (IOException e) {
-                return null;
-            }
-        }}
+        return null;
+    }
+}
 

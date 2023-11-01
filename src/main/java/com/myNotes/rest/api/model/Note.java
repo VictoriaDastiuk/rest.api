@@ -25,7 +25,7 @@ public class Note implements Serializable {
     private String modifyDate;
 
     private String statusNote;
-    private UUID id;
+    private String id;
 
     int userID;
 
