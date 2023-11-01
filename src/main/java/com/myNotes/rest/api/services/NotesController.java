@@ -73,6 +73,7 @@ public class NotesController {
     public Note changeNote(String ID, String name, String title, String text, int userID) {
         Note note;
         String formattedDate = getDate();
+        List<Note> newlist = new ArrayList<>();
         note = findInNoteListbyID(ID, userID);
         note.setModifyDate(formattedDate);
         note.setStatusNote("Modified");
