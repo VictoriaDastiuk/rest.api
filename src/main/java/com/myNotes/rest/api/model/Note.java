@@ -11,8 +11,8 @@ import java.security.PrivateKey;
 import java.util.*;
 @Getter
 @Setter
-@Component
-public class Note implements Serializable {
+
+public class Note{
 
    private String nameNote;
 
@@ -29,7 +29,4 @@ public class Note implements Serializable {
 
     int userID;
 
-    public Note() {
-
-    }
 }

@@ -7,6 +7,8 @@ import com.myNotes.rest.api.model.Profile;
 import com.myNotes.rest.api.services.Auth;
 import com.myNotes.rest.api.services.NotesController;
 import com.myNotes.rest.api.services.ProfilesController;
+import netscape.javascript.JSObject;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,7 +42,7 @@ public class ModelOfProject {
     }
 
     @RequestMapping(value = "/api/newNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String newNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+    public String newNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException, JSONException {
         if (noteDto.getEmail().isEmpty() || noteDto.getNameNote().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
@@ -50,12 +52,11 @@ public class ModelOfProject {
     }
 
     @RequestMapping(value = "/api/changeNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String changeNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+    public String changeNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException, JSONException {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
-            notesControl.WantChangeNote(noteDto.getEmail(), noteDto.getNameNote(), noteDto.getTitle(), noteDto.getText(), noteDto.getHowFind(), noteDto.getValueParamFind());
-            return result;
+            return notesControl.WantChangeNote(noteDto.getEmail(), noteDto.getNameNote(), noteDto.getTitle(), noteDto.getText(), noteDto.getHowFind(), noteDto.getValueParamFind());;
         }
     }
 
@@ -64,23 +65,21 @@ public class ModelOfProject {
         return notesControl.ShowNoteList(noteDto.getEmail());
     }
 
-    @RequestMapping(value = "/api/showNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String showNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
-        if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
-            return "Message: error. Missing parametr for email or name fo Note";
-        } else {
-            notesControl.WantShowNote(noteDto.getEmail(), noteDto.getHowFind(), noteDto.getValueParamFind());
-            return result;
-        }
-    }
+//    @RequestMapping(value = "/api/showNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public String showNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+//        if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
+//            return "Message: error. Missing parametr for email or name fo Note";
+//        } else {
+//            return (notesControl.WantShowNote(noteDto.getEmail(), noteDto.getHowFind(), noteDto.getValueParamFind()));
+//        }
+//    }
 
     @RequestMapping(value = "/api/delNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String delNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+    public String delNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException, JSONException {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
-            notesControl.deleteNote(noteDto.getHowFind(), noteDto.getValueParamFind(), noteDto.getEmail());
-            return result;
+            return notesControl.deleteNote(noteDto.getHowFind(), noteDto.getValueParamFind(), noteDto.getEmail());
         }
     }
 

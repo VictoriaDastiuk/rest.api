@@ -14,17 +14,11 @@ import java.io.ObjectOutputStream;
 
 @Getter
 @Setter
-@Component
-public class Profile implements Serializable {
+
+public class Profile {
 
     String Name;
 
     String email;
     int userID;
-
-
-
-    public Profile(){
-    }
-
-   }
+}

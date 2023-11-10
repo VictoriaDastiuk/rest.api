@@ -1,6 +1,8 @@
 package com.myNotes.rest.api.services;
 
 import com.myNotes.rest.api.model.Note;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,6 @@ import java.util.*;
 @Service
 public class NotesController {
 
-    private static NotesController instance;
     @Autowired
     ProfilesController profilesContr;
     @Autowired
@@ -49,7 +50,7 @@ public class NotesController {
     //    Знайти по назві нотатку
     public String findInNoteListbyName(String name, int userID) {
         for (Note note : NoteListInst.getNoteList()) {
-            if (note.getTitleNote().equals(name) && note.getUserID() == userID) {
+            if (note.getNameNote().equals(name) && note.getUserID() == userID) {
                 return note.getId();
             }
         }
@@ -70,24 +71,26 @@ public class NotesController {
     }
 
     //   Зміна нотатки
-    public Note changeNote(String ID, String name, String title, String text, int userID) {
-        Note note;
+    public void changeNote(String ID, String name, String title, String text, int userID) {
         String formattedDate = getDate();
         List<Note> newlist = new ArrayList<>();
-        note = findInNoteListbyID(ID, userID);
-        note.setModifyDate(formattedDate);
-        note.setStatusNote("Modified");
-
-        if (title != null) {
-            note.setTitleNote(title);
+        for (Note note : NoteListInst.getNoteList()){
+            if (note.getId().equals(ID)){
+                note.setModifyDate(formattedDate);
+                note.setStatusNote("Modified");
+                if (title != null) {
+                    note.setTitleNote(title);
+                }
+                if (name != null) {
+                    note.setNameNote(name);
+                }
+                if (text != null) {
+                    note.setTextNote(text);
+                }
+            }
+            newlist.add(note);
         }
-        if (name != null) {
-            note.setNameNote(name);
-        }
-        if (text != null) {
-            note.setTextNote(text);
-        }
-        return note;
+        NoteListInst.setNoteList(newlist);
     }
 
     public void changeAllNote(String ID, String title, String name, String text, int userID) {
@@ -131,7 +134,7 @@ public class NotesController {
         return dateFormat.format(date);
     }
 
-    public String WantChangeNote(String email, String name, String title, String text, String howFind, String valueParamFind) throws IOException, ClassNotFoundException {
+    public String WantChangeNote(String email, String name, String title, String text, String howFind, String valueParamFind) throws IOException, ClassNotFoundException, JSONException {
         String result = profilesContr.checkEmailInProfilesList(email);
         if (result.equals("ok")) {
             int userID = Integer.parseInt(profilesContr.getUserIDFromList(email));
@@ -151,7 +154,7 @@ public class NotesController {
                 //resultOfFindNote - ID Note
                 //param - нове значення параметру який міняєм
                 //whatChange - що треба змінити в нотатці
-                Note note = changeNote(idNote, name, title, text, userID);
+                changeNote(idNote, name, title, text, userID);
                 // додавання в файл нотатки
                 FilesNotes file = new FilesNotes();
                 file.AddNoteInFile(NoteListInst.getNoteList());
@@ -164,7 +167,7 @@ public class NotesController {
         return result;
     }
 
-    public String deleteNote(String howFind, String valueParamFind, String email) throws IOException, ClassNotFoundException {
+    public String deleteNote(String howFind, String valueParamFind, String email) throws IOException, ClassNotFoundException, JSONException {
         String result = profilesContr.checkEmailInProfilesList(email);
         if (result.equals("ok")) {
             int userID = Integer.parseInt(profilesContr.getUserIDFromList(email));
@@ -185,7 +188,7 @@ public class NotesController {
         }
     }
 
-    public String makeNote(String name, String title, String text, String email) throws IOException, ClassNotFoundException {
+    public String makeNote(String name, String title, String text, String email) throws IOException, ClassNotFoundException, JSONException {
         String result = profilesContr.checkEmailInProfilesList(email);
         if (result.equals("ok")) {
             int userID = Integer.parseInt(profilesContr.getUserIDFromList(email));
@@ -197,15 +200,20 @@ public class NotesController {
                 note.setStatusNote("Created");
                 note.setId(name + "_" + userID);
                 note.setUserID(userID);
+                note.setModifyDate(formattedDate);
+                note.setNameNote(name);
+                note.setTitleNote(title);
+                note.setTextNote(text);
+                NoteListInst.addNote(note);
 
-                changeAllNote(note.getId(), title, name, text, userID);
+//                changeAllNote(note.getId(), title, name, text, userID);
 //                NoteListInst.addNote(note);
 
                 // додавання в файл нотатки
                 FilesNotes file = new FilesNotes();
                 file.AddNoteInFile(NoteListInst.getNoteList());
                 return "ok";
-            } catch (IOException e) {
+            } catch (Exception e) {
                 return "error";
             }
         } else {
@@ -219,10 +227,11 @@ public class NotesController {
             int userID = Integer.parseInt(profilesContr.getUserIDFromList(email));
             List<Note> userNote = new ArrayList<Note>();
             for (Note note : NoteListInst.getNoteList()) {
-                if (note.getUserID() == userID) {
+                if (note.getUserID() == userID && !note.getStatusNote().equals("Deleted")) {
                     userNote.add(note);
                 }
             }
+            return userNote;
         }
         return null;
     }
@@ -241,5 +250,27 @@ public class NotesController {
             }
         }
         return null;
+    }
+
+    public JSONObject formJSONObject(String idNote) throws JSONException {
+        JSONObject result = new JSONObject();
+        if (idNote==null){
+            result.put("message", "You don`t have this note");
+        }
+        else {
+            for (Note note : NoteListInst.getNoteList()) {
+                JSONObject noteObject = new JSONObject();
+                noteObject.put("nameName", note.getNameNote());
+                noteObject.put("statusNote", note.getStatusNote());
+                noteObject.put("TextNote", note.getTextNote());
+                noteObject.put("TitleNote", note.getTitleNote());
+                noteObject.put("AddDate", note.getAddDate());
+                noteObject.put("Id", note.getId());
+                noteObject.put("ModifyDate", note.getModifyDate());
+                noteObject.put("UserID", note.getUserID());
+                result.putOpt("note", noteObject);
+            }
+        }
+        return result;
     }
 }
