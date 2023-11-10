@@ -56,7 +56,7 @@ public class ModelOfProject {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
-            return notesControl.WantChangeNote(noteDto.getEmail(), noteDto.getNameNote(), noteDto.getTitle(), noteDto.getText(), noteDto.getHowFind(), noteDto.getValueParamFind());;
+            return notesControl.WantChangeNote(noteDto.getEmail(), noteDto.getNameNote(), noteDto.getTitle(), noteDto.getText(), noteDto.getHowFind(), noteDto.getValueParamFind());
         }
     }
 
