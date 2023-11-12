@@ -23,31 +23,37 @@ public class FilesNotes {
 
     @PostConstruct
     private void addToListNotesFromFile() throws IOException, JSONException {
-        // Створити об'єкт File
-        File file = new File("Notes.txt");
+        try {
+            // Створити об'єкт File
+            File file = new File("Notes.txt");
 
-        // Створити об'єкт FileReader
-        FileReader fileReader = new FileReader(file);
+            // Створити об'єкт FileReader
+            FileReader fileReader = new FileReader(file);
 
-        // Створити об'єкт BufferedReader
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
+            // Створити об'єкт BufferedReader
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-        // Читати JSON з BufferedReader
-        String json = bufferedReader.readLine();
+            // Читати JSON з BufferedReader
+            String json = bufferedReader.readLine();
 
-        // Створити список нотаток з JSON
-        List<Note> notes = GetNotesFromJson(json);
+            // Створити список нотаток з JSON
+            List<Note> notes = GetNotesFromJson(json);
 
-        // Закрити файл
-        fileReader.close();
-        bufferedReader.close();
+            // Закрити файл
+            fileReader.close();
+            bufferedReader.close();
 
-        // Закрити файл
-        fileReader.close();
-        bufferedReader.close();
+            // Закрити файл
+            fileReader.close();
+            bufferedReader.close();
 
-        noteListInst.setNoteList(notes);
+            noteListInst.setNoteList(notes);
+        }
+        catch (FileNotFoundException e){
+//            File file = new File("Notes.txt");
+        }
     }
+
 
     private List<Note> GetNotesFromJson(String json) throws JSONException {
         // Створити JSONArray з JSON
@@ -80,6 +86,7 @@ public class FilesNotes {
 
     @PostConstruct
     private void addToListProfilesFromFile() throws IOException, JSONException {
+        try{
         // Створити об'єкт File
         File file = new File("Profiles.txt");
 
@@ -104,6 +111,10 @@ public class FilesNotes {
         bufferedReader.close();
 
         profileListInst.setProfileList(profiles);
+    }
+        catch (FileNotFoundException e){
+//            File file = new File("Profiles.txt");
+        }
     }
 
     private List<Profile> GetProfilesFromJson(String json) throws JSONException {
@@ -130,21 +141,39 @@ public class FilesNotes {
         return profiles;
     }
 
-    @Scheduled(fixedDelay = 60)
-    public void AddNoteInFile(List<Note> notes) throws IOException {
-        File file = new File("Notes.txt");
-        FileWriter writer = new FileWriter(file, false);
-        JSONArray arr = new JSONArray(notes);
-        System.out.println(arr.toString());
-        writer.write(arr.toString());
-        writer.close();
-    }
+//    @Scheduled(fixedDelay = 60000)
+    public void AddNoteInFile(List<Note> notes) throws IOException, JSONException {
+            JSONArray arr = new JSONArray();
+            for (Note note : notes) {
+                JSONObject noteObject = new JSONObject();
+                noteObject.put("nameName", note.getNameNote());
+                noteObject.put("statusNote", note.getStatusNote());
+                noteObject.put("TextNote", note.getTextNote());
+                noteObject.put("TitleNote", note.getTitleNote());
+                noteObject.put("AddDate", note.getAddDate());
+                noteObject.put("Id", note.getId());
+                noteObject.put("ModifyDate", note.getModifyDate());
+                noteObject.put("UserID", note.getUserID());
+                arr.put(noteObject);
+            }
+            File file = new File("Notes.txt");
+            FileWriter writer = new FileWriter(file, false);
+            writer.write(arr.toString());
+            writer.close();
+        }
 
-    public void AddProfileInFile(List<Profile> profiles) throws IOException {
+    public void AddProfileInFile(List<Profile> profiles) throws IOException, JSONException {
+        JSONArray arr = new JSONArray();
+        for (Profile profile : profiles) {
+            JSONObject profilObject = new JSONObject();
+            profilObject.put("Name", profile.getName());
+            profilObject.put("email", profile.getEmail());
+            profilObject.put("userID", profile.getUserID());
+
+            arr.put(profilObject);
+        }
         File file = new File("Profiles.txt");
         FileWriter writer = new FileWriter(file, false);
-        JSONArray arr = new JSONArray(profiles);
-        System.out.println(arr.toString());
         writer.write(arr.toString());
         writer.close();
     }

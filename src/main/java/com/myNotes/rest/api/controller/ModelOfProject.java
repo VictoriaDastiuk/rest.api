@@ -49,7 +49,7 @@ public class ModelOfProject {
     }
 
     @RequestMapping(value = "/api/changeNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String changeNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
+    public String changeNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException, JSONException {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {

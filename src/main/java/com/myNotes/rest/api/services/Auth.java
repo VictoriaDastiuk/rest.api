@@ -19,7 +19,7 @@ public class Auth {
     @Autowired
     ProfileList ProfileListInst;
 
-    public String startAuth(String mail, String user) throws IOException {
+    public String startAuth(String mail, String user) throws IOException, JSONException {
         String result = null;
         if (!ProfileListInst.getProfileList().isEmpty()) {
             String nullProfiles = profilesContr.findInProfileList(mail, user);

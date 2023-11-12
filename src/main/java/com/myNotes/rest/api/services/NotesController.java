@@ -134,7 +134,7 @@ public class NotesController {
         return dateFormat.format(date);
     }
 
-    public String WantChangeNote(String email, String name, String title, String text, String howFind, String valueParamFind) throws IOException, ClassNotFoundException {
+    public String WantChangeNote(String email, String name, String title, String text, String howFind, String valueParamFind) throws IOException, ClassNotFoundException, JSONException {
         String result = profilesContr.checkEmailInProfilesList(email);
         if (result.equals("ok")) {
             int userID = Integer.parseInt(profilesContr.getUserIDFromList(email));
@@ -189,11 +189,12 @@ public class NotesController {
             try {
                 //  визначення сьогоднішньої дати
                 String formattedDate = getDate();
-                SimpleDateFormat formatDate = new SimpleDateFormat("ddMMyyyyHHmmssms");
+                Date date1 = new Date();
+                    SimpleDateFormat formatDate = new SimpleDateFormat("ddMMyyyyHHmmssSS");
 
                 Note note = createNote();
                 note.setStatusNote("Created");
-                note.setId(name + "_" + userID +"_"+formatDate);
+                note.setId(name + "_" + userID +"_"+formatDate.format(date1));
                 note.setUserID(userID);
                 note.setModifyDate(formattedDate);
                 note.setNameNote(name);
