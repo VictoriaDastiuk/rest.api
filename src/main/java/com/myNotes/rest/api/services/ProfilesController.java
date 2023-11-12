@@ -1,24 +1,19 @@
 package com.myNotes.rest.api.services;
 
 import com.myNotes.rest.api.model.Profile;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Service
 public class ProfilesController {
-    String result;
     @Autowired
     ProfileList ProfileListInst;
-
-
-//    public boolean checkEmail(String email) {
-//        return ProfileListInst.getProfileList().stream().anyMatch(profile -> profile.getEmail().equals(email));
-//    }
 
     public Profile createProfile() {
         Profile person = new Profile();
@@ -42,19 +37,18 @@ public class ProfilesController {
     }
 
     public String findInProfileList(String email, String name) {
-
         for (Profile pr : ProfileListInst.getProfileList()) {
             if (Objects.equals(email, pr.getEmail())) {
                 if (Objects.equals(name, pr.getName())) {
-                    result = "ok";
+                    return "ok";
                 } else {
-                    result = "error";
+                    return "error";
                 }
             } else {
-                result = "new";
+                return "new";
             }
         }
-        return result;
+        return null;
     }
 
     public String getUserIDFromList(String email) {
@@ -65,28 +59,33 @@ public class ProfilesController {
         }
         return "error";
     }
-public String checkEmailInProfilesList (String email) throws IOException, ClassNotFoundException {
-            ;
-    if (ShowProfileList().isEmpty()) {
-        return "Can`t find profile";
-    } else {
-        String userIDSring = getUserIDFromList(email);
-        if (userIDSring.equals("error")) {
+
+    public String checkEmailInProfilesList(String email) throws IOException, ClassNotFoundException {
+        if (!ProfileListInst.getProfileList().isEmpty()) {
+            String userIDSring = getUserIDFromList(email);
+
+            if (userIDSring.equals("error")) {
+                return "Can`t find profile";
+            }
+        } else {
             return "Can`t find profile";
         }
+        return "ok";
     }
-    return "ok";
-    }
-    public List<Profile> ShowProfileList() throws IOException, ClassNotFoundException {
 
-                if (!ProfileListInst.getProfileList().isEmpty()){
-//                List<Profile> profiles = FilesNotes.getInfoProfilesFile();
-//                if (profiles!= null) {
-//                    ProfileListInst.setProfileList(profiles);
-//                }
-                    return ProfileListInst.getProfileList();
-            }
-        return null;
+    public JSONObject ShowProfileList() throws JSONException {
+        JSONObject answ = new JSONObject();
+        if (!ProfileListInst.getProfileList().isEmpty()) {
+            answ.put("Message:", "Don`t` have profiles");
+            return answ;
+        } else {
+
+            JSONArray Array = new JSONArray();
+            Array.put(ProfileListInst.getProfileList());
+            answ.put("profiles",Array);
+
+            return answ;
+        }
     }
 }
 

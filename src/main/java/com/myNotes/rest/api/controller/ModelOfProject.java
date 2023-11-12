@@ -7,8 +7,8 @@ import com.myNotes.rest.api.model.Profile;
 import com.myNotes.rest.api.services.Auth;
 import com.myNotes.rest.api.services.NotesController;
 import com.myNotes.rest.api.services.ProfilesController;
-import netscape.javascript.JSObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +23,6 @@ import java.util.*;
 @Controller
 @RestController
 public class ModelOfProject {
-    String result;
     @Autowired
     NotesController notesControl;
     @Autowired
@@ -32,12 +31,11 @@ public class ModelOfProject {
     Auth authControl;
 
     @RequestMapping(value = "/api/auth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String Auth(@RequestBody AuthDto authDto) throws IOException, ClassNotFoundException {
+    public String Auth(@RequestBody AuthDto authDto) throws IOException, ClassNotFoundException, JSONException {
         if (authDto.getEmail().isEmpty() || authDto.getName().isEmpty()) {
             return "Message: error. Missing parametr";
         } else {
-            result = authControl.startAuth(authDto.getEmail(), authDto.getName());
-            return result;
+            return authControl.startAuth(authDto.getEmail(), authDto.getName());
         }
     }
 
@@ -46,13 +44,12 @@ public class ModelOfProject {
         if (noteDto.getEmail().isEmpty() || noteDto.getNameNote().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
-            result = notesControl.makeNote(noteDto.getNameNote(), noteDto.getTitle(), noteDto.getText(), noteDto.getEmail());
-            return result;
+            return notesControl.makeNote(noteDto.getNameNote(), noteDto.getTitle(), noteDto.getText(), noteDto.getEmail());
         }
     }
 
     @RequestMapping(value = "/api/changeNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String changeNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException, JSONException {
+    public String changeNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
             return "Message: error. Missing parametr for email or name fo Note";
         } else {
@@ -65,15 +62,16 @@ public class ModelOfProject {
         return notesControl.ShowNoteList(noteDto.getEmail());
     }
 
-//    @RequestMapping(value = "/api/showNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public String showNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException {
-//        if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
-//            return "Message: error. Missing parametr for email or name fo Note";
-//        } else {
-//            return (notesControl.WantShowNote(noteDto.getEmail(), noteDto.getHowFind(), noteDto.getValueParamFind()));
-//        }
-//    }
-
+    @RequestMapping(value = "/api/showNote", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public JSONObject showNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException, JSONException {
+        if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Message","Wrong auth");
+            return jsonObject;
+        } else {
+            return notesControl.WantShowNote(noteDto.getEmail(), noteDto.getHowFind(), noteDto.getValueParamFind());
+        }
+    }
     @RequestMapping(value = "/api/delNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String delNote(@RequestBody NoteDto noteDto) throws IOException, ClassNotFoundException, JSONException {
         if (noteDto.getEmail().isEmpty() || noteDto.getValueParamFind().isEmpty() || noteDto.getHowFind().isEmpty()) {
@@ -84,7 +82,7 @@ public class ModelOfProject {
     }
 
     @RequestMapping(value = "/api/showAllProfiles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Profile> showAllProfiles() throws IOException, ClassNotFoundException {
+    public JSONObject showAllProfiles() throws JSONException {
         return profilesContr.ShowProfileList();
     }
 

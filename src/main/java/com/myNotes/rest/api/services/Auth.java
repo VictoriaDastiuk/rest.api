@@ -1,6 +1,7 @@
 package com.myNotes.rest.api.services;
 
 import com.myNotes.rest.api.model.Profile;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,19 +11,17 @@ import java.util.List;
 @Service
 
 public class Auth {
-    String result;
+
     @Autowired
     ProfilesController profilesContr;
     @Autowired
+    FilesNotes filesNotes;
+    @Autowired
     ProfileList ProfileListInst;
-//ProfileList profileList = new ProfileList();
 
-    public String startAuth(String mail, String user) throws IOException, ClassNotFoundException {
-
-//        List<Profile> profiles = FilesNotes.getInfoProfilesFile();
-//        if (profiles != null) {
-//            ProfileListInst.setProfileList(profiles);
-        if (!ProfileListInst.getProfileList().isEmpty()){
+    public String startAuth(String mail, String user) throws IOException {
+        String result = null;
+        if (!ProfileListInst.getProfileList().isEmpty()) {
             String nullProfiles = profilesContr.findInProfileList(mail, user);
             if (nullProfiles.equals("new")) {
                 // Cтворення користувача
@@ -31,15 +30,18 @@ public class Auth {
                 profilesContr.changeProfile(profile.getUserID(), user, mail);
                 List<Profile> newProfiles = ProfileListInst.getProfileList();
 
-                FilesNotes.AddProfileInFile(newProfiles);
+                filesNotes.AddProfileInFile(newProfiles);
 
                 result = "Авторизація успішна";
+                return result;
             } else {
                 if (nullProfiles.equals("ok")) {
                     result = "Авторизація успішна";
+                    return result;
                 }
                 if (nullProfiles.equals("error")) {
                     result = "Авторизація не успішна";
+                    return result;
                 }
             }
         } else {
@@ -48,9 +50,10 @@ public class Auth {
             profilesContr.addProfile(profile);
             profile = profilesContr.changeProfile(profile.getUserID(), user, mail);
 
-            FilesNotes.AddProfileInFile(ProfileListInst.getProfileList());
+            filesNotes.AddProfileInFile(ProfileListInst.getProfileList());
 
             result = "Авторизація успішна";
+            return result;
         }
         return result;
     }

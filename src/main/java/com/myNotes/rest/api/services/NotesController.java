@@ -134,16 +134,10 @@ public class NotesController {
         return dateFormat.format(date);
     }
 
-    public String WantChangeNote(String email, String name, String title, String text, String howFind, String valueParamFind) throws IOException, ClassNotFoundException, JSONException {
+    public String WantChangeNote(String email, String name, String title, String text, String howFind, String valueParamFind) throws IOException, ClassNotFoundException {
         String result = profilesContr.checkEmailInProfilesList(email);
         if (result.equals("ok")) {
             int userID = Integer.parseInt(profilesContr.getUserIDFromList(email));
-//            try {
-//                List<Note> infoFromFile = NoteListInst.getNoteList();
-//                if (infoFromFile != null) {
-//                    NoteListInst.setNoteList(infoFromFile);
-//                }
-
 //        питаєм по чому робим пошук нотатки? і виводить айді нотатки
             String idNote = howFindNote(howFind, valueParamFind, userID);
 
@@ -188,26 +182,24 @@ public class NotesController {
         }
     }
 
-    public String makeNote(String name, String title, String text, String email) throws IOException, ClassNotFoundException, JSONException {
+    public String makeNote(String name, String title, String text, String email) throws IOException, ClassNotFoundException {
         String result = profilesContr.checkEmailInProfilesList(email);
         if (result.equals("ok")) {
             int userID = Integer.parseInt(profilesContr.getUserIDFromList(email));
             try {
                 //  визначення сьогоднішньої дати
                 String formattedDate = getDate();
+                SimpleDateFormat formatDate = new SimpleDateFormat("ddMMyyyyHHmmssms");
 
                 Note note = createNote();
                 note.setStatusNote("Created");
-                note.setId(name + "_" + userID);
+                note.setId(name + "_" + userID +"_"+formatDate);
                 note.setUserID(userID);
                 note.setModifyDate(formattedDate);
                 note.setNameNote(name);
                 note.setTitleNote(title);
                 note.setTextNote(text);
                 NoteListInst.addNote(note);
-
-//                changeAllNote(note.getId(), title, name, text, userID);
-//                NoteListInst.addNote(note);
 
                 // додавання в файл нотатки
                 FilesNotes file = new FilesNotes();
@@ -236,29 +228,26 @@ public class NotesController {
         return null;
     }
 
-    public Note WantShowNote(String email, String howFind, String valueParamFind) throws IOException, ClassNotFoundException {
+    public JSONObject WantShowNote(String email, String howFind, String valueParamFind) throws IOException, ClassNotFoundException, JSONException {
         String result = profilesContr.checkEmailInProfilesList(email);
         if (result.equals("ok")) {
             int userID = Integer.parseInt(profilesContr.getUserIDFromList(email));
             // питаєм по чому робим пошук нотатки? і виводить айді нотатки
             String idNote = howFindNote(howFind, valueParamFind, userID);
-            if (idNote == null) {
-                //якшо не нашли нотатку
-                return null;
-            } else {
-                return findInNoteListbyID(idNote, userID);
-            }
+            return fromJSONObject(idNote, userID);
         }
-        return null;
+        JSONObject jsonres = new JSONObject();
+        jsonres.put("message", "You don`t have account");
+        return jsonres;
     }
 
-    public JSONObject formJSONObject(String idNote) throws JSONException {
+    public JSONObject fromJSONObject (String idNote, int userID) throws JSONException {
         JSONObject result = new JSONObject();
         if (idNote==null){
             result.put("message", "You don`t have this note");
         }
         else {
-            for (Note note : NoteListInst.getNoteList()) {
+            Note note = findInNoteListbyID(idNote, userID);
                 JSONObject noteObject = new JSONObject();
                 noteObject.put("nameName", note.getNameNote());
                 noteObject.put("statusNote", note.getStatusNote());
@@ -270,7 +259,6 @@ public class NotesController {
                 noteObject.put("UserID", note.getUserID());
                 result.putOpt("note", noteObject);
             }
-        }
         return result;
     }
 }
