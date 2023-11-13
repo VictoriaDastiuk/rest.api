@@ -18,6 +18,8 @@ public class NotesController {
     ProfilesController profilesContr;
     @Autowired
     NoteList NoteListInst;
+    @Autowired
+    FilesNotes filesNotes;
 
 
     public Note createNote() {
@@ -70,12 +72,30 @@ public class NotesController {
         return id;
     }
 
+    public boolean findDuplicates(String param, String valueParamFind, int userID) {
+        int duplicate = 0;
+        for (Note note : NoteListInst.getNoteList()) {
+            if (param.equals("заголовок") && note.getTitleNote().equals(valueParamFind) && note.getUserID() == userID) {
+                duplicate++;
+            }
+            if (param.equals("назва") && note.getNameNote().equals(valueParamFind) && note.getUserID() == userID) {
+                duplicate++;
+            }
+
+        }
+        if (duplicate == 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     //   Зміна нотатки
     public void changeNote(String ID, String name, String title, String text, int userID) {
         String formattedDate = getDate();
         List<Note> newlist = new ArrayList<>();
-        for (Note note : NoteListInst.getNoteList()){
-            if (note.getId().equals(ID)){
+        for (Note note : NoteListInst.getNoteList()) {
+            if (note.getId().equals(ID)) {
                 note.setModifyDate(formattedDate);
                 note.setStatusNote("Modified");
                 if (title != null) {
@@ -96,7 +116,7 @@ public class NotesController {
     public void changeAllNote(String ID, String title, String name, String text, int userID) {
         String formattedDate = getDate();
         List<Note> newlist = new ArrayList<>();
-        if (NoteListInst.getNoteList().isEmpty()){
+        if (NoteListInst.getNoteList().isEmpty()) {
             Note notenew = new Note();
             notenew.setModifyDate(formattedDate);
             notenew.setStatusNote("Modified");
@@ -105,20 +125,20 @@ public class NotesController {
             notenew.setTextNote(text);
             newlist.add(notenew);
             NoteListInst.setNoteList(newlist);
-        }
-        else{
-        for (Note note : NoteListInst.getNoteList()) {
-            if (note.getId().equals(ID) && note.getUserID() == userID) {
-                note.setModifyDate(formattedDate);
-                note.setStatusNote("Modified");
-                note.setNameNote(name);
-                note.setTitleNote(title);
-                note.setTextNote(text);
+        } else {
+            for (Note note : NoteListInst.getNoteList()) {
+                if (note.getId().equals(ID) && note.getUserID() == userID) {
+                    note.setModifyDate(formattedDate);
+                    note.setStatusNote("Modified");
+                    note.setNameNote(name);
+                    note.setTitleNote(title);
+                    note.setTextNote(text);
+                }
+                newlist.add(note);
             }
-            newlist.add(note);
+            NoteListInst.setNoteList(newlist);
         }
-        NoteListInst.setNoteList(newlist);
-    }}
+    }
 
     public void delNote(String ID, int userID) {
         Note note;
@@ -143,22 +163,24 @@ public class NotesController {
 
             if (idNote == null) {
                 //якшо не нашли нотатку
-                result = "не знайли нотатку";
+                return "не знайли нотатку";
             } else {
-                //resultOfFindNote - ID Note
-                //param - нове значення параметру який міняєм
-                //whatChange - що треба змінити в нотатці
-                changeNote(idNote, name, title, text, userID);
-                // додавання в файл нотатки
-                FilesNotes file = new FilesNotes();
-                file.AddNoteInFile(NoteListInst.getNoteList());
-                result = "ok";
+                if (!findDuplicates(howFind, valueParamFind, userID)) {
+                    return "You have more than 1 note with this value of param for finding";
+                } else {
+                    //resultOfFindNote - ID Note
+                    //param - нове значення параметру який міняєм
+                    //whatChange - що треба змінити в нотатці
+                    changeNote(idNote, name, title, text, userID);
+                    // додавання в файл нотатки
+                    filesNotes.AddNoteInFile();
+                    return "ok";
 
+                }
             }
         } else {
-            result = "You haven`t profile";
+            return "You haven`t profile";
         }
-        return result;
     }
 
     public String deleteNote(String howFind, String valueParamFind, String email) throws IOException, ClassNotFoundException, JSONException {
@@ -173,8 +195,8 @@ public class NotesController {
                 return "ERROR";
             } else {
                 delNote(idNote, userID);
-                FilesNotes file = new FilesNotes();
-                file.AddNoteInFile(NoteListInst.getNoteList());
+                //                file.AddNoteInFile(NoteListInst.getNoteList());
+                filesNotes.AddNoteInFile();
                 return "ok";
             }
         } else {
@@ -190,11 +212,11 @@ public class NotesController {
                 //  визначення сьогоднішньої дати
                 String formattedDate = getDate();
                 Date date1 = new Date();
-                    SimpleDateFormat formatDate = new SimpleDateFormat("ddMMyyyyHHmmssSS");
+                SimpleDateFormat formatDate = new SimpleDateFormat("ddMMyyyyHHmmssSS");
 
                 Note note = createNote();
                 note.setStatusNote("Created");
-                note.setId(name + "_" + userID +"_"+formatDate.format(date1));
+                note.setId(name + "_" + userID + "_" + formatDate.format(date1));
                 note.setUserID(userID);
                 note.setModifyDate(formattedDate);
                 note.setNameNote(name);
@@ -203,8 +225,8 @@ public class NotesController {
                 NoteListInst.addNote(note);
 
                 // додавання в файл нотатки
-                FilesNotes file = new FilesNotes();
-                file.AddNoteInFile(NoteListInst.getNoteList());
+                //                file.AddNoteInFile(NoteListInst.getNoteList());
+                filesNotes.AddNoteInFile();
                 return "ok";
             } catch (Exception e) {
                 return "error";
@@ -242,24 +264,23 @@ public class NotesController {
         return jsonres;
     }
 
-    public JSONObject fromJSONObject (String idNote, int userID) throws JSONException {
+    public JSONObject fromJSONObject(String idNote, int userID) throws JSONException {
         JSONObject result = new JSONObject();
-        if (idNote==null){
+        if (idNote == null) {
             result.put("message", "You don`t have this note");
-        }
-        else {
+        } else {
             Note note = findInNoteListbyID(idNote, userID);
-                JSONObject noteObject = new JSONObject();
-                noteObject.put("nameName", note.getNameNote());
-                noteObject.put("statusNote", note.getStatusNote());
-                noteObject.put("TextNote", note.getTextNote());
-                noteObject.put("TitleNote", note.getTitleNote());
-                noteObject.put("AddDate", note.getAddDate());
-                noteObject.put("Id", note.getId());
-                noteObject.put("ModifyDate", note.getModifyDate());
-                noteObject.put("UserID", note.getUserID());
-                result.putOpt("note", noteObject);
-            }
+            JSONObject noteObject = new JSONObject();
+            noteObject.put("nameName", note.getNameNote());
+            noteObject.put("statusNote", note.getStatusNote());
+            noteObject.put("TextNote", note.getTextNote());
+            noteObject.put("TitleNote", note.getTitleNote());
+            noteObject.put("AddDate", note.getAddDate());
+            noteObject.put("Id", note.getId());
+            noteObject.put("ModifyDate", note.getModifyDate());
+            noteObject.put("UserID", note.getUserID());
+            result.putOpt("note", noteObject);
+        }
         return result;
     }
 }

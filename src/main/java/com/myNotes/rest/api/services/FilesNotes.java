@@ -141,10 +141,10 @@ public class FilesNotes {
         return profiles;
     }
 
-//    @Scheduled(fixedDelay = 60000)
-    public void AddNoteInFile(List<Note> notes) throws IOException, JSONException {
-            JSONArray arr = new JSONArray();
-            for (Note note : notes) {
+    @Scheduled(fixedDelay = 600)
+    public void AddNoteInFile() throws IOException, JSONException {
+        JSONArray arr = new JSONArray();
+            for (Note note : noteListInst.getNoteList()) {
                 JSONObject noteObject = new JSONObject();
                 noteObject.put("nameName", note.getNameNote());
                 noteObject.put("statusNote", note.getStatusNote());
